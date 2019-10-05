@@ -1,0 +1,137 @@
+@font-face {
+  font-family: 'Share Tech Mono';
+  font-style: normal;
+  font-weight: 400;
+  src:  local('Share Tech Mono'), 
+        local('ShareTechMono-Regular'),
+        url('ShareTechMono.woff2') format('woff2'), 
+        url('ShareTechMono.woff') format('woff'),
+        url('ShareTechMono-regular.ttf') format('truetype');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215;
+}
+  @font-face {
+    font-family: 'weather';
+    src: url('https://s3-us-west-2.amazonaws.com/s.cdpn.io/93/artill_clean_icons-webfont.eot');
+    src: url('artill_clean_icons-webfont.woff') format('woff'),
+         url('artill_clean_icons-webfont.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+* {
+  margin: 0;
+}
+html, body {
+  height: 100%;
+}
+body{
+    font-family: "Share Tech Mono";
+    background-color: black;
+    color:#e0183c;
+    /*cursor: none;*/
+}
+#page-wrap {
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none; /* Internet Explorer */
+  -khtml-user-select: none; /* KHTML browsers (e.g. Konqueror) */
+  -webkit-user-select: none; /* Chrome, Safari, and Opera */
+  -webkit-touch-callout: none;
+  min-height: 99%;
+  /* equal to footer height */
+  margin-bottom: -48px; 
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-align: center;
+  -ms-flex-align: center;
+  -webkit-align-items: center;
+  align-items: center;
+}
+#page-wrap:after {
+  content: "";
+  display: block;
+}
+#footer, #page-wrap:after {
+  height: 48px; 
+}
+#footer {
+  text-align:right;
+}
+#inner-wrap{
+  display: block; 
+  text-align: center; 
+  margin: 0px auto;
+}
+#weather {
+  /*position: relative;
+  top: 3em;
+  width: 350px;*/
+  margin: 0px auto;
+  text-align: center;
+  text-transform: uppercase;
+  font-size: 2.2em;
+}
+
+#weather span[class^="icon-"]{
+  font-family: weather;
+  font-size: 1.8em;
+}
+#weather .icon-0:before { content: ":"; }
+#weather .icon-1:before { content: "p"; }
+#weather .icon-2:before { content: "S"; }
+#weather .icon-3:before { content: "Q"; }
+#weather .icon-4:before { content: "S"; }
+#weather .icon-5:before { content: "W"; }
+#weather .icon-6:before { content: "W"; }
+#weather .icon-7:before { content: "W"; }
+#weather .icon-8:before { content: "W"; }
+#weather .icon-9:before { content: "I"; }
+#weather .icon-10:before { content: "W"; }
+#weather .icon-11:before { content: "I"; }
+#weather .icon-12:before { content: "I"; }
+#weather .icon-13:before { content: "I"; }
+#weather .icon-14:before { content: "I"; }
+#weather .icon-15:before { content: "W"; }
+#weather .icon-16:before { content: "I"; }
+#weather .icon-17:before { content: "W"; }
+#weather .icon-18:before { content: "U"; }
+#weather .icon-19:before { content: "Z"; }
+#weather .icon-20:before { content: "Z"; }
+#weather .icon-21:before { content: "Z"; }
+#weather .icon-22:before { content: "Z"; }
+#weather .icon-23:before { content: "Z"; }
+#weather .icon-24:before { content: "E"; }
+#weather .icon-25:before { content: "E"; }
+#weather .icon-26:before { content: "3"; }
+#weather .icon-27:before { content: "a"; }
+#weather .icon-28:before { content: "A"; }
+#weather .icon-29:before { content: "a"; }
+#weather .icon-30:before { content: "A"; }
+#weather .icon-31:before { content: "6"; }
+#weather .icon-32:before { content: "1"; }
+#weather .icon-33:before { content: "6"; }
+#weather .icon-34:before { content: "1"; }
+#weather .icon-35:before { content: "W"; }
+#weather .icon-36:before { content: "1"; }
+#weather .icon-37:before { content: "S"; }
+#weather .icon-38:before { content: "S"; }
+#weather .icon-39:before { content: "S"; }
+#weather .icon-40:before { content: "M"; }
+#weather .icon-41:before { content: "W"; }
+#weather .icon-42:before { content: "I"; }
+#weather .icon-43:before { content: "W"; }
+#weather .icon-44:before { content: "a"; }
+#weather .icon-45:before { content: "S"; }
+#weather .icon-46:before { content: "U"; }
+#weather .icon-47:before { content: "S"; }
+	
+#time{
+    font-size: 8em; 
+    /*padding-top:24%;*/
+    text-align: center;
+}
+#clock{/*position:absolute; bottom 0; right: 0;*/ 
+    font-size: 2em; 
+    padding-right: 10px;
+}

