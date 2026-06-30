@@ -2,6 +2,7 @@
 title: Možnosti formátování
 date: 2026-06-27
 excerpt: Přehled toho, co se dá v článcích použít — text, nadpisy, seznamy, citace, obrázky (i se zarovnáním a popiskem), tabulky a zvýrazněný zdrojový kód.
+draft: true
 tags:
   - návod
   - formátování

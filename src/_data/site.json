@@ -17,7 +17,6 @@
   },
   "nav": [
     { "text": "Domů", "url": "/" },
-    { "text": "O mně", "url": "/o-mne/" },
     {
       "text": "Projekty",
       "children": [

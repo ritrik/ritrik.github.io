@@ -2,6 +2,7 @@
 title: Test zvýraznění kódu
 date: 2026-06-27
 excerpt: Ukázkový článek pro ověření zvýraznění syntaxe v šesti jazycích — C#, PowerShell, JavaScriptu, Pythonu, Rustu a Go.
+draft: true
 tags:
   - kód
   - csharp
