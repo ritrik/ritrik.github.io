@@ -1,0 +1,6 @@
+node_modules/
+_site/
+.DS_Store
+
+# Lokální (strojově specifické) nastavení Claude Code — necommitovat
+.claude/settings.local.json

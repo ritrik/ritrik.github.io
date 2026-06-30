@@ -1,0 +1,73 @@
+{
+  // Úlohy pro VS Code (Terminal → Run Task… / Ctrl+Shift+B).
+  // Napojené na npm skripty v package.json.
+  "version": "2.0.0",
+  "tasks": [
+    {
+      // Sestaví web do _site/. Výchozí build úloha (Ctrl+Shift+B / ⌘+Shift+B).
+      "label": "Build",
+      "type": "npm",
+      "script": "build",
+      "problemMatcher": [],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated",
+        "clear": true
+      }
+    },
+    {
+      // Dev server s živým náhledem na http://localhost:8080 (sleduje změny v src/).
+      "label": "Serve (watch + dev server)",
+      "type": "npm",
+      "script": "serve",
+      "isBackground": true,
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated"
+      }
+    },
+    {
+      // Smaže výstupní složku _site/.
+      "label": "Clean",
+      "type": "npm",
+      "script": "clean",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "clear": true
+      }
+    },
+    {
+      // Úklid + čistý build (clean → build).
+      "label": "Rebuild (clean + build)",
+      "dependsOrder": "sequence",
+      "dependsOn": ["Clean", "Build"],
+      "problemMatcher": []
+    },
+    {
+      // Vytvoří nový (rozepsaný) článek; zeptá se na název.
+      "label": "Nový článek",
+      "type": "shell",
+      "command": "npm run new -- \"${input:postTitle}\"",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "clear": true
+      }
+    }
+  ],
+  "inputs": [
+    {
+      "id": "postTitle",
+      "type": "promptString",
+      "description": "Název nového článku"
+    }
+  ]
+}
