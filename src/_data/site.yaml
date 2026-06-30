@@ -24,10 +24,10 @@ nav:
       - text: Timer
         url: /apps/timer/
         newTab: true
-  - url: /feed.xml
-    icon: rss-fill
-    label: RSS kanál
-    newTab: true
+#  - url: /feed.xml
+#    icon: rss-fill
+#    label: RSS kanál
+#    newTab: true
 
 # Sociální sítě v patičce. Zobrazí se jen položky s enabled: true.
 # icon = název ikony z Bootstrap Icons (icons.getbootstrap.com).
@@ -36,6 +36,10 @@ social:
     url: https://github.com/ritrik
     enabled: true
     icon: github
+  - label: RSS Kanál
+    url: /feed.xml
+    enabled: true
+    icon: rss-fill
   - label: LinkedIn
     url: https://linkedin.com/UZIVATEL
     enabled: false
