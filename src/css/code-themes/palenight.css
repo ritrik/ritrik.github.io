@@ -1,0 +1,15 @@
+/* Téma kódu: Material Palenight */
+:root {
+  --code-bg: #292d3e;
+  --code-ink: #bfc7d5;
+  --code-border: rgba(255, 255, 255, 0.08);
+  --code-ln: #4b526d;
+  --tok-comment: #676e95;
+  --tok-punct: #bfc7d5;
+  --tok-keyword: #c792ea;
+  --tok-string: #c3e88d;
+  --tok-number: #f78c6c;
+  --tok-function: #82aaff;
+  --tok-class: #ffcb6b;
+  --tok-tag: #f07178;
+}

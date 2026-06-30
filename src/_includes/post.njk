@@ -1,0 +1,18 @@
+---
+layout: base.njk
+---
+<article class="post">
+  <p class="post-back post-back--top"><a href="/blog/"><i class="bi bi-arrow-left" aria-hidden="true"></i> Zpět na blog</a></p>
+  <h1 class="post-title">{{ title }}{% if draft %} <span class="draft-badge">Koncept</span>{% endif %}</h1>
+  <p class="post-meta">{{ page.date | datumCZ }}</p>
+  {{ content | safe }}
+
+  {# Štítky článku — odkazují na blog vyfiltrovaný daným štítkem #}
+  {% if tags | length > 1 %}
+    <p class="post-tags">
+      {% for t in tags %}{% if t != 'posts' %}<a class="post-tag" href="/blog/?tag={{ t | urlencode }}">{{ t }}</a>{% endif %}{% endfor %}
+    </p>
+  {% endif %}
+
+  <p class="post-back"><a href="/blog/"><i class="bi bi-arrow-left" aria-hidden="true"></i> Zpět na blog</a></p>
+</article>

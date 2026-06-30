@@ -1,0 +1,15 @@
+/* Téma kódu: VS Code Dark+  (aktivní – viz site.json → codeTheme) */
+:root {
+  --code-bg: #1e1e1e;
+  --code-ink: #d4d4d4;
+  --code-border: rgba(255, 255, 255, 0.08);
+  --code-ln: #858585;
+  --tok-comment: #6a9955;
+  --tok-punct: #d4d4d4;
+  --tok-keyword: #569cd6;
+  --tok-string: #ce9178;
+  --tok-number: #b5cea8;
+  --tok-function: #dcdcaa;
+  --tok-class: #4ec9b0;
+  --tok-tag: #9cdcfe;
+}

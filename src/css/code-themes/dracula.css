@@ -1,0 +1,15 @@
+/* Téma kódu: Dracula */
+:root {
+  --code-bg: #282a36;
+  --code-ink: #f8f8f2;
+  --code-border: rgba(255, 255, 255, 0.08);
+  --code-ln: #6272a4;
+  --tok-comment: #6272a4;
+  --tok-punct: #f8f8f2;
+  --tok-keyword: #ff79c6;
+  --tok-string: #f1fa8c;
+  --tok-number: #bd93f9;
+  --tok-function: #50fa7b;
+  --tok-class: #8be9fd;
+  --tok-tag: #ff79c6;
+}

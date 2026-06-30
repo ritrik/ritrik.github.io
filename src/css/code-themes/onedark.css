@@ -1,0 +1,15 @@
+/* Téma kódu: One Dark (Atom) */
+:root {
+  --code-bg: #282c34;
+  --code-ink: #abb2bf;
+  --code-border: rgba(255, 255, 255, 0.08);
+  --code-ln: #4b5263;
+  --tok-comment: #5c6370;
+  --tok-punct: #abb2bf;
+  --tok-keyword: #c678dd;
+  --tok-string: #98c379;
+  --tok-number: #d19a66;
+  --tok-function: #61afef;
+  --tok-class: #e5c07b;
+  --tok-tag: #e06c75;
+}

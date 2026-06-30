@@ -1,0 +1,15 @@
+/* Téma kódu: Gruvbox Dark */
+:root {
+  --code-bg: #282828;
+  --code-ink: #ebdbb2;
+  --code-border: rgba(255, 255, 255, 0.08);
+  --code-ln: #7c6f64;
+  --tok-comment: #928374;
+  --tok-punct: #ebdbb2;
+  --tok-keyword: #fb4934;
+  --tok-string: #b8bb26;
+  --tok-number: #d3869b;
+  --tok-function: #fabd2f;
+  --tok-class: #8ec07c;
+  --tok-tag: #83a598;
+}

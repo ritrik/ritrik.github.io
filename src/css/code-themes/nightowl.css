@@ -1,0 +1,15 @@
+/* Téma kódu: Night Owl */
+:root {
+  --code-bg: #011627;
+  --code-ink: #d6deeb;
+  --code-border: rgba(255, 255, 255, 0.10);
+  --code-ln: #4b6479;
+  --tok-comment: #637777;
+  --tok-punct: #d6deeb;
+  --tok-keyword: #c792ea;
+  --tok-string: #ecc48d;
+  --tok-number: #f78c6c;
+  --tok-function: #82aaff;
+  --tok-class: #ffcb8b;
+  --tok-tag: #addb67;
+}

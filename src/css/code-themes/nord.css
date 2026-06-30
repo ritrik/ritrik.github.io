@@ -1,0 +1,15 @@
+/* Téma kódu: Nord */
+:root {
+  --code-bg: #2e3440;
+  --code-ink: #d8dee9;
+  --code-border: rgba(255, 255, 255, 0.08);
+  --code-ln: #4c566a;
+  --tok-comment: #616e88;
+  --tok-punct: #d8dee9;
+  --tok-keyword: #81a1c1;
+  --tok-string: #a3be8c;
+  --tok-number: #b48ead;
+  --tok-function: #88c0d0;
+  --tok-class: #8fbcbb;
+  --tok-tag: #8fbcbb;
+}

@@ -1,0 +1,1033 @@
+/* =========================================================================
+   Ryutaro web — vlastní styl
+   Rozvržení ve stylu Hyde (pevný boční panel vlevo + obsah vpravo).
+   Barvy přepíná Bootstrap 5.3 přes atribut data-bs-theme="light|dark".
+   Paleta vychází z fotky mlžného lesa a loga (slate-teal + šalvějová zeleň).
+   ========================================================================= */
+
+/* ---- Písma ----
+   Rodiny --serif / --sans / --cascadia se nastavují v src/_data/site.json
+   (klíč „fonts") a dosazují se přes <style> v base.njk. Tady se už jen používají. */
+:root {
+  /* Role písem — sem stačí sáhnout, když chceš jiné písmo.
+     Ukazují na rodiny --serif / --sans / --cascadia ze site.json. */
+  --font-brand: var(--serif); /* hlavní nadpis v panelu „Ryutaro web" */
+  --font-nav: var(--sans);    /* odkazy v navigaci */
+
+  /* Boční panel zůstává tmavý v obou režimech (signatura tématu Hyde) */
+  /* Pozadí jemně posunuté do tepla (varianta „Teplá 3") */
+  --side-bg: #24281e;
+  --side-ink: #e9eeec;
+  --side-soft: rgba(233, 238, 236, 0.55);
+  --side-rule: rgba(255, 255, 255, 0.12);
+
+  --maxw-content: 38rem;
+  --sidebar-w: 18rem;
+  --topbar-h: 3.4rem; /* výška mobilní lišty s burger tlačítkem */
+}
+
+/* ---- Tmavý režim (výchozí) ---- */
+[data-bs-theme="dark"] {
+  --ground: #14140e;
+  --content-bg: #1c1f15;
+  --content-ink: #dfe6e4;
+  --content-soft: #9fb0ac;
+  --rule: rgba(255, 255, 255, 0.10);
+  --accent: #8fae9e;
+  --cover-scrim: rgba(8, 14, 14, 0.50);
+  --cover-vignette: rgba(0, 0, 0, 0.5);
+  --cover-ink: #f1f4f3;
+  --cover-shadow: 0 0.05rem 0.25rem rgba(0, 0, 0, 0.55);
+
+  /* Pozadí vsazeného kódu `takhle` (barvy bloků kódu řeší zvolené téma
+     v css/code-themes/ — viz site.json → codeTheme) */
+  --inline-code-bg: rgba(255, 255, 255, 0.06);
+}
+
+/* ---- Světlý režim ---- */
+[data-bs-theme="light"] {
+  --ground: #ede8da;
+  --content-bg: #f8f4e9;
+  --content-ink: #293433;
+  --content-soft: #5d6b69;
+  --rule: rgba(20, 30, 30, 0.12);
+  --accent: #3f6a57;
+  --cover-scrim: rgba(230, 236, 235, 0.28);
+  --cover-vignette: rgba(255, 255, 255, 0.30);
+  --cover-ink: #1b2423;
+  --cover-shadow: 0 0.05rem 0.2rem rgba(255, 255, 255, 0.55);
+
+  /* Pozadí vsazeného kódu `takhle` (barvy bloků kódu řeší zvolené téma
+     v css/code-themes/ — viz site.json → codeTheme) */
+  --inline-code-bg: rgba(0, 0, 0, 0.055);
+}
+
+/* ---- Základ ---- */
+body {
+  margin: 0;
+  font-family: var(--sans);
+  background-color: var(--ground);
+  color: var(--content-ink);
+  -webkit-font-smoothing: antialiased;
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+/* =========================================================================
+   Boční panel
+   ========================================================================= */
+.sidebar {
+  background-color: var(--side-bg);
+  color: var(--side-ink);
+  text-align: center;
+  padding: 2.4rem 1.2rem;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.sidebar-top {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+}
+.sidebar-logo-link {
+  display: inline-block;
+  line-height: 0;
+}
+.sidebar-logo {
+  width: 84px;
+  height: 84px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid var(--side-rule);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
+}
+.sidebar-brand {
+  font-family: var(--font-brand);
+  font-weight: 400;
+  font-size: 1.95rem;
+  line-height: 1.1;
+  margin: 0.6rem 0 0;
+}
+.sidebar-brand a {
+  color: #fff;
+  text-decoration: none;
+}
+.sidebar-tagline {
+  color: var(--side-soft);
+  font-size: 0.95rem;
+  margin: 0.15rem 0 0.5rem;
+}
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  margin: 0.4rem 0;
+}
+.sidebar-nav-item {
+  font-family: var(--font-nav);
+  color: var(--side-soft);
+  text-decoration: none;
+  line-height: 1.9;
+  font-size: 0.92rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+.sidebar-nav-item:hover {
+  color: #fff;
+}
+.sidebar-nav-item.active {
+  color: #fff;
+  font-weight: 700;
+}
+/* Položka menu vykreslená jen jako ikona (např. RSS) */
+.sidebar-nav-icon {
+  font-size: 1.15rem;
+  margin-top: 0.15rem;
+}
+/* Drobná ikonka „otevře se v novém okně / externě" u položek menu */
+.nav-ext {
+  font-size: 0.62em;
+  margin-left: 0.4em;
+  vertical-align: middle;
+  opacity: 0.6;
+}
+
+/* Rozbalovací skupina v menu (submenu) */
+.sidebar-nav-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.sidebar-nav-toggle {
+  /* reset tlačítka — vypadá jako položka menu */
+  background: none;
+  border: 0;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+.caret {
+  display: inline-block;
+  border: 4px solid transparent;
+  border-left-color: currentColor;
+  transition: transform 0.2s ease;
+}
+/* Bootstrap Collapse přidává tlačítku třídu .collapsed, když je submenu zavřené */
+.sidebar-nav-toggle:not(.collapsed) .caret {
+  transform: rotate(90deg);
+}
+/* Skrytí/zobrazení řeší Bootstrap (.collapse:not(.show){display:none}) */
+.sidebar-subnav {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0.1rem 0 0.3rem;
+}
+.sidebar-subnav-item {
+  font-size: 0.82rem;
+  text-transform: none;
+  letter-spacing: 0.04em;
+  opacity: 0.9;
+}
+
+/* Přepínač den/noc — nenápadná ikonka vlevo nahoře */
+.theme-toggle {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  background: transparent;
+  border: 0;
+  color: var(--side-soft);
+  opacity: 0.55;
+  padding: 0.3rem;
+  border-radius: 50%;
+  line-height: 1;
+  transition: opacity 0.2s, color 0.2s;
+}
+.theme-toggle:hover {
+  opacity: 1;
+  color: #fff;
+}
+.theme-ico {
+  font-size: 1.05rem;
+  line-height: 1;
+}
+
+/* Patička bočního panelu: sociální sítě + rok + podpis */
+.sidebar-footer {
+  margin-top: 1.6rem;
+}
+.social {
+  display: flex;
+  justify-content: center;
+  gap: 0.9rem;
+  margin-bottom: 0.6rem;
+}
+.social-link {
+  display: inline-flex;
+  color: var(--side-soft);
+  opacity: 0.75;
+  transition: opacity 0.2s, color 0.2s;
+}
+.social-link:hover {
+  color: #fff;
+  opacity: 1;
+}
+.social-link i {
+  font-size: 1.25rem;
+  line-height: 1;
+  display: block;
+}
+.sidebar-copy {
+  margin: 0;
+  font-size: 0.72rem;
+  color: var(--side-soft);
+}
+.sidebar-credit {
+  margin: 0.2rem 0 0;
+  font-size: 0.66rem;
+  line-height: 1.4;
+  color: var(--side-soft);
+  opacity: 0.75;
+}
+.sidebar-credit a {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-color: rgba(255, 255, 255, 0.25);
+}
+.sidebar-credit a:hover {
+  color: #fff;
+}
+
+/* =========================================================================
+   Obsah
+   ========================================================================= */
+.content {
+  background-color: var(--content-bg);
+  color: var(--content-ink);
+  min-height: 100vh;
+  padding: 3.2rem 1.4rem 4rem;
+}
+.content-inner {
+  max-width: var(--maxw-content);
+}
+
+.content h1 {
+  font-family: var(--serif);
+  font-weight: 400;
+  line-height: 1.15;
+  font-size: 2.1rem;
+  margin: 0 0 0.3rem;
+  color: var(--content-ink);
+}
+.content p {
+  line-height: 1.72;
+  margin: 0 0 1.1rem;
+}
+.content a {
+  color: var(--accent);
+  text-decoration: none;
+  border-bottom: 1px solid color-mix(in srgb, var(--accent) 40%, transparent);
+}
+.content a:hover {
+  border-bottom-color: var(--accent);
+}
+
+/* =========================================================================
+   Bohatší typografie uvnitř článků (nadpisy, seznamy, citace, obrázky, tabulky)
+   ========================================================================= */
+.content h2 {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: 1.6rem;
+  line-height: 1.2;
+  margin: 2.2rem 0 0.6rem;
+}
+.content h3 {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: 1.3rem;
+  margin: 1.8rem 0 0.5rem;
+}
+.content ul,
+.content ol {
+  padding-left: 1.3rem;
+  margin: 0 0 1.1rem;
+  line-height: 1.7;
+}
+.content li {
+  margin: 0.2rem 0;
+}
+.content blockquote {
+  margin: 0 0 1.2rem;
+  padding: 0.3rem 0 0.3rem 1rem;
+  border-left: 3px solid var(--accent);
+  color: var(--content-soft);
+  font-style: italic;
+}
+.content blockquote p:last-child {
+  margin-bottom: 0;
+}
+.content hr {
+  border: 0;
+  border-top: 1px solid var(--rule);
+  margin: 2.2rem 0;
+}
+
+/* Obrázky a popisky */
+.content img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 0.4rem;
+}
+.content figure {
+  margin: 0 0 1.4rem;
+}
+.content figure img {
+  display: block;
+  width: 100%;
+}
+.content figcaption {
+  color: var(--content-soft);
+  font-size: 0.82rem;
+  margin-top: 0.45rem;
+  text-align: center;
+}
+/* Zarovnání obrázků (přidej třídu k <img> nebo <figure> přímo v článku) */
+.content .img-center {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+.content .img-left {
+  float: left;
+  max-width: 45%;
+  margin: 0.3rem 1.2rem 0.8rem 0;
+}
+.content .img-right {
+  float: right;
+  max-width: 45%;
+  margin: 0.3rem 0 0.8rem 1.2rem;
+}
+@media (max-width: 32em) {
+  .content .img-left,
+  .content .img-right {
+    float: none;
+    max-width: 100%;
+    margin: 0 0 1rem;
+  }
+}
+
+/* Tabulky */
+.content .table-wrap {
+  overflow-x: auto;
+  margin: 0 0 1.4rem;
+}
+.content table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.92rem;
+}
+.content th,
+.content td {
+  text-align: left;
+  padding: 0.5rem 0.7rem;
+  border-bottom: 1px solid var(--rule);
+}
+.content thead th {
+  border-bottom: 2px solid var(--rule);
+  color: var(--content-ink);
+}
+
+/* Kotvy v nadpisech (markdown-it-anchor): ikonka odkazu za textem, jen při najetí myší */
+.content .header-anchor {
+  margin-left: 0.35em;
+  color: var(--accent);
+  border-bottom: 0;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+.content h1:hover .header-anchor,
+.content h2:hover .header-anchor,
+.content h3:hover .header-anchor,
+.content .header-anchor:focus {
+  opacity: 0.75;
+}
+.content .header-anchor:hover {
+  opacity: 1;
+}
+
+/* Callouty (markdown-it-container): :::note / :::tip / :::warning */
+.callout {
+  margin: 0 0 1.4rem;
+  padding: 0.8rem 1rem;
+  border-left: 3px solid var(--accent);
+  border-radius: 0 0.4rem 0.4rem 0;
+  background: color-mix(in srgb, var(--accent) 10%, transparent);
+}
+.callout > :last-child {
+  margin-bottom: 0;
+}
+.callout-warning {
+  border-left-color: #c2683c;
+  background: color-mix(in srgb, #c2683c 12%, transparent);
+}
+
+/* Zvýraznění (markdown-it-mark): ==text== */
+.content mark {
+  background: color-mix(in srgb, var(--accent) 28%, transparent);
+  color: inherit;
+  padding: 0.05em 0.2em;
+  border-radius: 0.2rem;
+}
+
+/* Poznámky pod čarou (markdown-it-footnote) */
+.content .footnotes {
+  margin-top: 2.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--rule);
+  font-size: 0.88rem;
+  color: var(--content-soft);
+}
+.content .footnotes ol {
+  padding-left: 1.2rem;
+}
+.content .footnote-ref a,
+.content .footnote-backref {
+  color: var(--accent);
+  border-bottom: 0;
+}
+
+/* Definiční seznamy (markdown-it-deflist) */
+.content dl {
+  margin: 0 0 1.1rem;
+}
+.content dt {
+  font-weight: 700;
+}
+.content dd {
+  margin: 0.1rem 0 0.6rem 1.1rem;
+  color: var(--content-soft);
+}
+
+/* Zkratky a vložený text */
+.content abbr[title] {
+  text-decoration: underline dotted;
+  cursor: help;
+}
+.content ins {
+  text-decoration: underline;
+}
+
+/* Zaškrtávací seznamy (markdown-it-task-lists) */
+.content .contains-task-list {
+  list-style: none;
+  padding-left: 0.2rem;
+}
+.content .task-list-item {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+}
+.content .task-list-item input {
+  accent-color: var(--accent);
+}
+
+/* Obsah článku (markdown-it-table-of-contents): [[toc]] */
+.content .toc {
+  margin: 0 0 1.6rem;
+  padding: 0.8rem 1rem;
+  border: 1px solid var(--rule);
+  border-radius: 0.4rem;
+  font-size: 0.9rem;
+}
+.content .toc ol,
+.content .toc ul {
+  margin: 0;
+  padding-left: 1.1rem;
+}
+.content .toc > ol,
+.content .toc > ul {
+  padding-left: 0;
+  list-style: none;
+}
+
+.page-meta,
+.post-meta {
+  color: var(--content-soft);
+  font-size: 0.82rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 1.8rem;
+}
+
+/* Blog — výpis článků */
+.post-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.post-list li {
+  padding: 1.4rem 0;
+  border-bottom: 1px solid var(--rule);
+}
+.post-list li:first-child {
+  padding-top: 0;
+}
+.post-list h2 {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: 1.5rem;
+  margin: 0 0 0.2rem;
+}
+.post-list h2 a {
+  color: var(--content-ink);
+  text-decoration: none;
+  border: 0;
+}
+.post-list h2 a:hover {
+  color: var(--accent);
+}
+.post-list .post-meta {
+  margin: 0 0 0.5rem;
+}
+.post-list .excerpt {
+  color: var(--content-soft);
+  margin: 0;
+  line-height: 1.65;
+}
+
+/* Filtr podle štítků (nad výpisem) */
+.tag-filter {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-bottom: 1.8rem;
+}
+.tag-chip {
+  font: inherit;
+  font-size: 0.76rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--content-soft);
+  background: transparent;
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  padding: 0.25rem 0.75rem;
+  cursor: pointer;
+  transition: color 0.2s, border-color 0.2s, background-color 0.2s;
+}
+.tag-chip:hover {
+  color: var(--content-ink);
+  border-color: var(--accent);
+}
+.tag-chip.is-active {
+  color: var(--content-bg);
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+/* Štítky u článku (výpis i samotný článek) */
+.post-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin: 0.6rem 0 0;
+}
+.post-tag {
+  font-size: 0.72rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--content-soft);
+}
+.post-tag::before {
+  content: "#";
+  opacity: 0.5;
+}
+a.post-tag {
+  text-decoration: none;
+  border: 0;
+}
+a.post-tag:hover {
+  color: var(--accent);
+}
+.post-list-empty {
+  color: var(--content-soft);
+}
+
+/* Jednotlivý článek */
+.post-title {
+  font-family: var(--serif);
+  font-weight: 400;
+}
+
+/* Odznak „Koncept" — drafty jsou vidět jen v dev náhledu */
+.draft-badge {
+  display: inline-block;
+  vertical-align: middle;
+  font-size: 0.6em;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #fff;
+  background: #c2683c;
+  padding: 0.15em 0.5em;
+  border-radius: 999px;
+}
+.post-back {
+  margin-top: 2.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--rule);
+  font-size: 0.9rem;
+}
+.post-back a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+/* Odkaz „Zpět" nad článkem — bez horní linky, místo pod ním */
+.post-back--top {
+  margin: 0 0 1.4rem;
+  padding: 0;
+  border-top: 0;
+}
+
+/* =========================================================================
+   Bloky kódu a zvýraznění syntaxe
+   Markup počítá plugin @11ty/eleventy-plugin-syntaxhighlight (Prism) při buildu;
+   tady jsou jen barvy. Tokeny používají proměnné --tok-*, takže fungují v obou
+   režimech (den/noc).
+   ========================================================================= */
+.content pre,
+.content code {
+  font-family: var(--cascadia);
+  font-size: 0.86rem;
+}
+
+/* Krátký kód vsazený do textu (`takhle`) — zůstává v barvě stránky (den/noc) */
+.content code {
+  background: var(--inline-code-bg);
+  color: var(--content-ink);
+  padding: 0.1em 0.35em;
+  border-radius: 0.25rem;
+}
+
+/* Blok kódu (```jazyk … ```) — barvy podle zvoleného tématu */
+.content pre {
+  position: relative;
+  background: var(--code-bg);
+  color: var(--code-ink);
+  border: 1px solid var(--code-border);
+  border-radius: 0.5rem;
+  padding: 1rem 1.1rem;
+  margin: 0 0 1.4rem;
+  overflow-x: auto;
+  line-height: 1.55;
+}
+/* Uvnitř bloku už vsazený styl code neplatí */
+.content pre code {
+  background: none;
+  padding: 0;
+  border-radius: 0;
+  color: inherit;
+}
+
+/* Prism tokeny (standardní mapování barev na proměnné --tok-*) */
+.token.comment,
+.token.prolog,
+.token.doctype,
+.token.cdata { color: var(--tok-comment); font-style: italic; }
+.token.punctuation { color: var(--tok-punct); }
+.token.property,
+.token.tag,
+.token.boolean,
+.token.constant,
+.token.symbol,
+.token.deleted { color: var(--tok-tag); }
+.token.number { color: var(--tok-number); }
+.token.selector,
+.token.attr-name,
+.token.string,
+.token.char,
+.token.builtin,
+.token.inserted { color: var(--tok-string); }
+.token.operator,
+.token.entity,
+.token.url,
+.language-css .token.string,
+.style .token.string { color: var(--tok-punct); }
+.token.atrule,
+.token.attr-value,
+.token.keyword { color: var(--tok-keyword); }
+.token.function { color: var(--tok-function); }
+.token.class-name { color: var(--tok-class); }
+.token.regex,
+.token.important,
+.token.variable { color: var(--tok-number); }
+.token.important,
+.token.bold { font-weight: 700; }
+.token.italic { font-style: italic; }
+
+/* Čísla řádků — plugin zabalí každý řádek do .highlight-line (alwaysWrapLineHighlights) */
+.content pre code { counter-reset: code-line; }
+.content pre .highlight-line::before {
+  counter-increment: code-line;
+  content: counter(code-line);
+  display: inline-block;
+  width: 2.5em;
+  margin-right: 1em;
+  text-align: right;
+  color: var(--code-ln);
+  opacity: 0.7;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* Tlačítko Kopírovat — plovoucí vpravo nahoře, průhledné dokud nenajedeš myší.
+   Je odsazené nad textem (position: absolute), takže nic neposouvá. */
+.code-copy {
+  position: absolute;
+  top: 0.45rem;
+  right: 0.55rem;
+  opacity: 0;
+  transition: opacity 0.15s ease, color 0.15s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: 0;
+  padding: 0.15rem;
+  color: var(--code-ink);
+  font-size: 1rem;
+  line-height: 1;
+  cursor: pointer;
+}
+.content pre:hover .code-copy,
+.code-copy:focus-visible {
+  opacity: 0.65;
+}
+.content pre:hover .code-copy:hover,
+.code-copy:focus-visible {
+  opacity: 1;
+}
+.code-copy.copied {
+  color: #7ddc8f;
+  opacity: 1;
+}
+/* Dotyková zařízení (bez myši) — nech tlačítko mírně viditelné */
+@media (hover: none) {
+  .code-copy { opacity: 0.6; }
+}
+
+/* =========================================================================
+   Úvodní stránka (cover) — fotka lesa s textem uprostřed
+   ========================================================================= */
+.content--cover {
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  position: relative;
+  color: var(--cover-ink);
+  background-image: url(/img/background_1920.jpg);
+  background-repeat: no-repeat;
+  background-position: center top;
+  background-size: cover;
+  background-attachment: fixed;
+  box-shadow: inset 0 0 7rem var(--cover-vignette);
+}
+.content--cover::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--cover-scrim);
+  pointer-events: none;
+}
+.content--cover .content-inner {
+  position: relative;
+  z-index: 1;
+  max-width: 42em;
+  padding: 2rem;
+}
+.cover-heading {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: clamp(2.4rem, 6.5vw, 4.2rem);
+  line-height: 1.05;
+  margin: 0;
+  text-wrap: balance;
+  text-shadow: var(--cover-shadow);
+  color: var(--cover-ink);
+}
+.cover-lead {
+  font-size: 1.18rem;
+  margin: 1.1rem 0 0;
+  opacity: 0.85;
+  text-shadow: var(--cover-shadow);
+}
+
+/* Responzivní fotky pozadí (stejné breakpointy jako původní web) */
+@media (max-width: 575.98px) {
+  .content--cover { background-image: url(/img/background_480.jpg); }
+}
+@media (min-width: 576px) and (max-width: 767.98px) {
+  .content--cover { background-image: url(/img/background_576.jpg); }
+}
+@media (min-width: 768px) and (max-width: 991.98px) {
+  .content--cover { background-image: url(/img/background_768.jpg); }
+}
+@media (min-width: 1200px) and (max-width: 1919.98px) {
+  .content--cover { background-image: url(/img/background_1200.jpg); }
+}
+@media (min-width: 1920px) {
+  .content--cover { background-image: url(/img/background_1920.jpg); }
+}
+
+/* =========================================================================
+   Rozvržení na širších obrazovkách: pevný panel vlevo
+   ========================================================================= */
+@media (min-width: 48em) {
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: var(--sidebar-w);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    overflow-y: auto;
+  }
+  .content {
+    margin-left: var(--sidebar-w);
+    padding: 4.5rem 3rem 4rem 4rem;
+  }
+  .content--cover {
+    margin-left: var(--sidebar-w);
+    padding: 0;
+  }
+  /* Patička klesne na spodek panelu */
+  .sidebar-footer {
+    margin-top: auto;
+    padding-top: 1.6rem;
+  }
+}
+
+/* =========================================================================
+   Mobilní lišta + burger menu
+   Na úzkých displejích se boční panel schová do vysouvacího menu, které
+   otevírá burger tlačítko v horní liště. Na širokých displejích (výše)
+   je lišta skrytá a panel zůstává napevno vlevo.
+   ========================================================================= */
+.topbar {
+  /* Skrytá ve výchozím stavu; zobrazí se jen na úzkých displejích (viz níže) */
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--topbar-h);
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0 0.5rem;
+  background: var(--side-bg);
+  color: var(--side-ink);
+  border-bottom: 1px solid var(--side-rule);
+  z-index: 1030;
+}
+.topbar-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: 1.3rem;
+  line-height: 1;
+  color: #fff;
+  text-decoration: none;
+}
+.topbar-logo {
+  width: 1.85rem;
+  height: 1.85rem;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid var(--side-rule);
+}
+
+/* Burger tlačítko (tři čárky → křížek) */
+.burger {
+  flex: 0 0 auto;
+  width: 2.75rem;
+  height: 2.75rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  color: var(--side-ink);
+  cursor: pointer;
+}
+.burger-box {
+  position: relative;
+  display: block;
+  width: 1.4rem;
+  height: 1rem;
+}
+.burger-line,
+.burger-line::before,
+.burger-line::after {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  border-radius: 2px;
+  background: currentColor;
+  transition: transform 0.25s ease, background-color 0.15s ease;
+}
+.burger-line {
+  top: 50%;
+  transform: translateY(-50%);
+}
+.burger-line::before {
+  content: "";
+  top: -7px;
+}
+.burger-line::after {
+  content: "";
+  top: 7px;
+}
+.nav-open .burger-line {
+  background: transparent;
+}
+.nav-open .burger-line::before {
+  transform: translateY(7px) rotate(45deg);
+}
+.nav-open .burger-line::after {
+  transform: translateY(-7px) rotate(-45deg);
+}
+
+/* Ztmavení obsahu pod otevřeným menu */
+.nav-backdrop {
+  display: none; /* jen na úzkých displejích (viz níže) */
+  position: fixed;
+  inset: 0;
+  z-index: 1010;
+  background: rgba(0, 0, 0, 0.5);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.25s ease, visibility 0.25s ease;
+}
+.nav-open .nav-backdrop {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Úzké displeje: panel jako vysouvací menu zleva */
+@media (max-width: 47.98em) {
+  /* Mobilní lišta a překryv se zapnou jen tady */
+  .topbar { display: flex; }
+  .nav-backdrop { display: block; }
+  .sidebar {
+    position: fixed;
+    top: var(--topbar-h);
+    left: 0;
+    bottom: 0;
+    width: 15.5rem;
+    max-width: 82vw;
+    transform: translateX(-100%);
+    transition: transform 0.28s ease;
+    z-index: 1020;
+    overflow-y: auto;
+    box-shadow: 2px 0 24px rgba(0, 0, 0, 0.4);
+  }
+  .nav-open .sidebar {
+    transform: translateX(0);
+  }
+  /* Obsah (kromě úvodního coveru) odsadit pod pevnou lištu */
+  .content:not(.content--cover) {
+    padding-top: calc(var(--topbar-h) + 1.4rem);
+  }
+  /* Zámek posuvu na pozadí při otevřeném menu */
+  body.nav-open {
+    overflow: hidden;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+  }
+}

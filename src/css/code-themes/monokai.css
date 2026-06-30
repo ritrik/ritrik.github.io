@@ -1,0 +1,15 @@
+/* Téma kódu: Monokai Dark Soda */
+:root {
+  --code-bg: #262626;
+  --code-ink: #f8f8f2;
+  --code-border: rgba(255, 255, 255, 0.08);
+  --code-ln: #75715e;
+  --tok-comment: #75715e;
+  --tok-punct: #f8f8f2;
+  --tok-keyword: #f92672;
+  --tok-string: #e6db74;
+  --tok-number: #ae81ff;
+  --tok-function: #a6e22e;
+  --tok-class: #66d9ef;
+  --tok-tag: #f92672;
+}
