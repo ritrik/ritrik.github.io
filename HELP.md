@@ -53,7 +53,8 @@ Co kde najdeš (vše podstatné je ve složce `src/`):
 | Soubor / složka | K čemu slouží |
 | --- | --- |
 | `eleventy.config.js` | Nastavení Eleventy a pluginů (kód, RSS, obrázky, rozšíření Markdownu). Sem většinou není potřeba sahat. |
-| `src/_data/site.json` | **Konfigurace webu:** název, tagline, jazyk, adresa, téma kódu, písma, menu, sociální sítě. |
+| `src/_data/site.yaml` | **Konfigurace webu:** název, tagline, jazyk, adresa, téma kódu, menu, sociální sítě. |
+| `src/_data/fonts.yaml` | **Písma** (Google Fonts + CSS rodiny). |
 | `src/_includes/base.njk` | **Hlavní šablona** — mobilní lišta, boční panel (logo, menu, patička), obsah, přepínač den/noc. |
 | `src/_includes/post.njk` | Šablona jednoho článku na blogu. |
 | `src/index.njk` | **Úvodní stránka** (s fotkou lesa na pozadí). |
@@ -62,7 +63,7 @@ Co kde najdeš (vše podstatné je ve složce `src/`):
 | `src/posts/*.md` | Jednotlivé **články** (jeden soubor = jeden článek). |
 | `src/posts/posts.json` | Nastavuje článkům šablonu a adresu `/blog/{nazev}/`. Neměň. |
 | `src/css/site.css` | **Vzhled a barvy.** |
-| `src/css/code-themes/*.css` | **Tmavá témata zvýraznění kódu** (přepínají se v `site.json`). |
+| `src/css/code-themes/*.css` | **Tmavá témata zvýraznění kódu** (přepínají se v `site.yaml`). |
 | `src/img/` | Logo (`logo.svg`, `logo.png`) a fotky pozadí `background_*.jpg`. |
 | `src/favicon.svg`, `src/favicon.ico` | Ikona webu v záložce prohlížeče. |
 | `src/apps/` | Statické mini-aplikace (kopírují se 1:1), např. `/apps/timer/`. |
@@ -122,73 +123,80 @@ Uprav `src/index.njk`.
 
 Uprav `src/about.md` (běžný Markdown).
 
-### Konfigurace webu — `src/_data/site.json`
+### Konfigurace webu — `src/_data/site.yaml`
 
-Jeden soubor řídí název, menu, písma, sociální sítě i téma kódu:
+Soubor `site.yaml` řídí název, adresu, menu, sociální sítě i téma kódu (písma jsou
+zvlášť v `fonts.yaml` — viz níže). Píše se v **YAML**: jsou povolené komentáře `#`,
+bez uvozovek a čárek.
 
-```json
-{
-  "title": "Ryutaro.cz",
-  "tagline": "Osobní web",
-  "lang": "cs-CZ",
-  "url": "https://ryutaro.cz",
-  "codeTheme": "vsdark",
-  "fonts": { },
-  "nav": [
-    { "text": "Domů", "url": "/" },
-    { "text": "O mně", "url": "/o-mne/" },
-    { "text": "Blog", "url": "/blog/" }
-  ],
-  "social": [ ]
-}
+```yaml
+title: Ryutaro.cz
+tagline: Osobní web
+lang: cs-CZ
+url: https://ryutaro.cz
+codeTheme: vsdark
+nav:
+  - text: Domů
+    url: /
+  - text: Blog
+    url: /blog/
+social:
+  - label: GitHub
+    url: https://github.com/ritrik
+    enabled: true
+    icon: github
 ```
 
-(Bloky `fonts` a `social` jsou rozepsané níže.)
-
 - **Menu (`nav`):**
-  - běžná položka: `{ "text": "Blog", "url": "/blog/" }`;
-  - **nové okno / externí web:** přidej `"newTab": true` — u takové položky se navíc
+  - běžná položka: `- text: Blog` + odsazené `url: /blog/`;
+  - **nové okno / externí web:** přidej `newTab: true` — u takové položky se navíc
     ukáže ikonka „otevře se jinde";
-  - **jen ikona** (bez textu): místo `text` dej `"icon"` (název Bootstrap Icons) a
-    `"label"`, např. RSS: `{ "url": "/feed.xml", "icon": "rss-fill", "label": "RSS", "newTab": true }`;
-  - **podmenu:** místo `url` dej `"children": [ … ]` s dalšími položkami — v panelu se
-    z položky stane rozbalovací skupina (stav otevřeno/zavřeno se pamatuje mezi stránkami).
+  - **jen ikona** (bez textu): místo `text` dej `icon` (název Bootstrap Icons) a `label`,
+    např. RSS: `url: /feed.xml`, `icon: rss-fill`, `label: RSS`, `newTab: true`;
+  - **podmenu:** místo `url` dej `children:` s dalšími položkami — v panelu se z položky
+    stane rozbalovací skupina (stav otevřeno/zavřeno se pamatuje mezi stránkami).
 
 #### Sociální sítě (`social`)
 
-Pole `social`; zobrazí se jen položky s `"enabled": true`. `icon` je **název ikony
+Seznam `social`; zobrazí se jen položky s `enabled: true`. `icon` je **název ikony
 z [Bootstrap Icons](https://icons.getbootstrap.com/)** (např. `github`, `linkedin`,
 `mastodon`, `envelope`):
 
-```json
-"social": [
-  { "label": "GitHub", "url": "https://github.com/ritrik", "enabled": true, "icon": "github" },
-  { "label": "E-mail", "url": "mailto:ahoj@ryutaro.cz", "enabled": false, "icon": "envelope" }
-]
+```yaml
+social:
+  - label: GitHub
+    url: https://github.com/ritrik
+    enabled: true
+    icon: github
+  - label: E-mail
+    url: mailto:ahoj@ryutaro.cz
+    enabled: false
+    icon: envelope
 ```
 
 Externí odkazy (`http…`) se otevřou v novém okně samy; u Mastodonu lze přidat
-`"rel": "me noopener"`.
+`rel: me noopener`.
 
-#### Písma (`fonts`)
+#### Písma — `src/_data/fonts.yaml`
 
-Tady se mění písma — na jednom místě (načtení z Google Fonts i dosazení do CSS):
+Písma jsou ve vlastním souboru `fonts.yaml` (v šablonách dostupná jako `fonts.*`). Na
+jednom místě se řídí načtení z Google Fonts i dosazení do CSS:
 
-```json
-"fonts": {
-  "google": [
-    { "name": "Fraunces", "spec": "Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900" },
-    { "name": "PT Sans", "spec": "PT+Sans:ital,wght@0,400;0,700;1,400" }
-  ],
-  "serif": "\"Fraunces\", Georgia, serif",
-  "sans": "\"PT Sans\", -apple-system, sans-serif",
-  "mono": "\"Cascadia Code\", monospace"
-}
+```yaml
+google:
+  - name: Fraunces
+    spec: "Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900"
+  - name: PT Sans
+    spec: "PT+Sans:ital,wght@0,400;0,700;1,400"
+serif: '"Fraunces", Georgia, serif'
+sans: '"PT Sans", -apple-system, sans-serif'
+mono: '"Cascadia Code", monospace'
 ```
 
-Swap písma = uprav `spec` (dotaz [Google Fonts](https://fonts.google.com/)) a odpovídající
-rodinu (`serif`/`sans`/`mono`). Šablona z toho sama poskládá `<link>` i CSS proměnné.
-(Role nadpisu/navigace lze doladit proměnnými `--font-brand`/`--font-nav` v `site.css`.)
+Swap písma = uprav `spec` (dotaz [Google Fonts](https://fonts.google.com/); kvůli `:` a `@`
+musí být v uvozovkách) a odpovídající rodinu (`serif`/`sans`/`mono` — v jednoduchých
+uvozovkách). Šablona z toho sama poskládá `<link>` i CSS proměnné. (Role nadpisu/navigace
+lze doladit proměnnými `--font-brand`/`--font-nav` v `site.css`.)
 
 ### Barvy a vzhled
 
@@ -203,10 +211,10 @@ Boční panel zůstává tmavý v **obou** režimech (signatura tématu Hyde).
 
 ### Téma zvýraznění kódu
 
-Bloky kódu mají vlastní tmavé téma. Přepneš ho **jedním slovem** v `site.json`:
+Bloky kódu mají vlastní tmavé téma. Přepneš ho **jedním slovem** v `site.yaml`:
 
-```json
-"codeTheme": "vsdark"
+```yaml
+codeTheme: vsdark
 ```
 
 Na výběr (soubory v `src/css/code-themes/`): `vsdark`, `monokai`, `gruvbox`, `dracula`,

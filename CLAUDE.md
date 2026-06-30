@@ -34,19 +34,20 @@ npm run build   # build do _site/
     transform `strip-eleventy-ignore` (úklid atributu po eleventy-img).
 - `src/_includes/base.njk` — **jediná hlavní šablona**: mobilní lišta s burgerem, boční
   panel (logo → název → tagline → nav → patička: sociální sítě + kredity), obsah. Přepínač
-  den/noc (ukládá do `localStorage`). Rodiny písem se dosazují ze `site.json` přes inline
+  den/noc (ukládá do `localStorage`). Rodiny písem se dosazují z `fonts.yaml` přes inline
   `<style>`. Logo je `<picture>` (SVG + PNG fallback) s `eleventy:ignore`, aby ho
   eleventy-img nepřepsal. Front-matter `cover: true` zapne fotku lesa na pozadí (úvod).
 - `src/_includes/post.njk` — šablona článku (odkaz „← Zpět na blog" nahoře i dole,
   titulek, datum, štítky, odznak „Koncept" u draftů).
 - `src/css/site.css` — veškerý styl. Barvy jsou CSS proměnné pro `[data-bs-theme="dark"]`
   a `[data-bs-theme="light"]` (pozadí teple laděné). Boční panel zůstává tmavý v obou
-  režimech. **Rodiny písem (`--serif/--sans/--cascadia`) se sem nepíšou** — jsou v `site.json`.
+  režimech. **Rodiny písem (`--serif/--sans/--cascadia`) se sem nepíšou** — jsou v `fonts.yaml`.
 - `src/css/code-themes/*.css` — tmavá témata zvýraznění kódu; aktivní vybírá
-  `site.json → codeTheme` (výchozí `vsdark`).
+  `site.yaml → codeTheme` (výchozí `vsdark`).
 - `src/index.njk` (cover), `src/about.md` (O mně — **Markdown**), `src/blog.njk` (výpis +
   filtr štítků), `src/posts/*.md` (články; `posts/posts.json` → šablona + URL `/blog/{slug}/`).
-- `src/_data/site.json` — název, tagline, jazyk, `url`, `codeTheme`, `fonts`, `nav`, `social`.
+- `src/_data/site.yaml` — název, tagline, jazyk, `url`, `codeTheme`, `nav`, `social` (YAML;
+  zapnuto přes `addDataExtension` + `js-yaml`). `src/_data/fonts.yaml` — písma (`fonts.*`).
 - `src/img/` — logo (`logo.svg` + `logo.png`) a responzivní fotky `background_*.jpg`.
   Favicon: `src/favicon.svg` (+ `favicon.ico` jako záloha) a apple-touch icon.
 - `src/apps/` — statické mini-aplikace (kopírují se 1:1), např. `/apps/timer/`.
@@ -55,7 +56,8 @@ npm run build   # build do _site/
 - **Nový článek:** `src/posts/RRRR-MM-DD-nazev.md` s hlavičkou `title`, `date`, `excerpt`,
   volitelně `tags`; `draft: true` = koncept (jen v dev). Objeví se automaticky ve výpisu
   blogu (od nejnovějšího), URL `/blog/{slug}/`.
-- **Menu, sociální sítě, písma, téma kódu:** vše v `src/_data/site.json` (detaily v `HELP.md`).
+- **Menu, sociální sítě, téma kódu:** v `src/_data/site.yaml`; **písma** v `src/_data/fonts.yaml`
+  (detaily v `HELP.md`).
   Položka v `nav`: nové okno/externí = `"newTab": true`; jen ikona = `"icon"` + `"label"`
   (bez `text`); podmenu = `"children": [ … ]`.
 - **Barvy / vzhled:** proměnné v `src/css/site.css`.

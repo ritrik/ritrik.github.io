@@ -6,11 +6,11 @@
    ========================================================================= */
 
 /* ---- Písma ----
-   Rodiny --serif / --sans / --cascadia se nastavují v src/_data/site.json
+   Rodiny --serif / --sans / --cascadia se nastavují v src/_data/fonts.yaml
    (klíč „fonts") a dosazují se přes <style> v base.njk. Tady se už jen používají. */
 :root {
   /* Role písem — sem stačí sáhnout, když chceš jiné písmo.
-     Ukazují na rodiny --serif / --sans / --cascadia ze site.json. */
+     Ukazují na rodiny --serif / --sans / --cascadia z fonts.yaml. */
   --font-brand: var(--serif); /* hlavní nadpis v panelu „Ryutaro web" */
   --font-nav: var(--sans);    /* odkazy v navigaci */
 
@@ -40,7 +40,7 @@
   --cover-shadow: 0 0.05rem 0.25rem rgba(0, 0, 0, 0.55);
 
   /* Pozadí vsazeného kódu `takhle` (barvy bloků kódu řeší zvolené téma
-     v css/code-themes/ — viz site.json → codeTheme) */
+     v css/code-themes/ — viz site.yaml → codeTheme) */
   --inline-code-bg: rgba(255, 255, 255, 0.06);
 }
 
@@ -58,7 +58,7 @@
   --cover-shadow: 0 0.05rem 0.2rem rgba(255, 255, 255, 0.55);
 
   /* Pozadí vsazeného kódu `takhle` (barvy bloků kódu řeší zvolené téma
-     v css/code-themes/ — viz site.json → codeTheme) */
+     v css/code-themes/ — viz site.yaml → codeTheme) */
   --inline-code-bg: rgba(0, 0, 0, 0.055);
 }
 

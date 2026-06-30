@@ -18,6 +18,7 @@ import markdownItTaskLists from "markdown-it-task-lists";
 import markdownItToc from "markdown-it-table-of-contents";
 import markdownItMathjax3 from "markdown-it-mathjax3";
 import markdownItImageFigures from "markdown-it-image-figures";
+import { load as yamlLoad } from "js-yaml";
 
 // Bezdiakritický slug pro id nadpisů (česky → hezké kotvy)
 const slugify = (s) =>
@@ -29,6 +30,9 @@ const slugify = (s) =>
     .replace(/^-+|-+$/g, "");
 
 export default function (eleventyConfig) {
+  // Datové soubory v _data smí být i YAML (.yaml/.yml), nejen JSON.
+  eleventyConfig.addDataExtension("yaml,yml", (contents) => yamlLoad(contents));
+
   // Rozšíření Markdownu (markdown-it pluginy). Nemění výchozí parser, jen ho doplní:
   //  - attrs:     třídy/id/atributy   →  Pár slov {.page-meta}
   //  - anchor:    klikací kotvy u nadpisů (deep-linking)
@@ -91,7 +95,7 @@ export default function (eleventyConfig) {
 
   // Zvýraznění syntaxe v blocích kódu (```jazyk … ```).
   // Obarvení se počítá při buildu (Prism). Barvy řeší zvolené téma v
-  // src/css/code-themes/ (viz site.json → codeTheme), čísla řádků a tlačítko
+  // src/css/code-themes/ (viz site.yaml → codeTheme), čísla řádků a tlačítko
   // Kopírovat jsou v src/css/site.css + base.njk.
   // alwaysWrapLineHighlights zabalí KAŽDÝ řádek do <span class="highlight-line">,
   // což využívají čísla řádků.

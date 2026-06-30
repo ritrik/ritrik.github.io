@@ -1,4 +1,4 @@
-/* Téma kódu: VS Code Dark+  (aktivní – viz site.json → codeTheme) */
+/* Téma kódu: VS Code Dark+  (aktivní – viz site.yaml → codeTheme) */
 :root {
   --code-bg: #1e1e1e;
   --code-ink: #d4d4d4;

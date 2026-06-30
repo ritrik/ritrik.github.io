@@ -1,0 +1,51 @@
+# Globální nastavení webu (Eleventy global data → dostupné v šablonách jako `site.*`).
+# Písma jsou zvlášť v fonts.yaml (jako `fonts.*`).
+
+title: Ryutaro.cz
+tagline: Osobní web
+lang: cs-CZ
+url: https://ryutaro.cz
+
+# Téma zvýraznění kódu — soubor z src/css/code-themes/ (bez přípony)
+codeTheme: vsdark
+
+# Menu v bočním panelu.
+#  - běžná položka:        { text, url }
+#  - nové okno / externí:  newTab: true
+#  - jen ikona (bez textu): icon (název Bootstrap Icons) + label
+#  - podmenu:              children: [ … ]
+nav:
+  - text: Domů
+    url: /
+  - text: Blog
+    url: /blog/  
+  - text: Appky
+    children:
+      - text: Timer
+        url: /apps/timer/
+        newTab: true
+  - url: /feed.xml
+    icon: rss-fill
+    label: RSS kanál
+    newTab: true
+
+# Sociální sítě v patičce. Zobrazí se jen položky s enabled: true.
+# icon = název ikony z Bootstrap Icons (icons.getbootstrap.com).
+social:
+  - label: GitHub
+    url: https://github.com/ritrik
+    enabled: true
+    icon: github
+  - label: LinkedIn
+    url: https://linkedin.com/UZIVATEL
+    enabled: false
+    icon: linkedin
+  - label: Mastodon
+    url: https://mastodon.social/@UZIVATEL
+    enabled: false
+    rel: me noopener
+    icon: mastodon
+  - label: E-mail
+    url: mailto:admin@ryutaro.cz
+    enabled: false
+    icon: envelope
