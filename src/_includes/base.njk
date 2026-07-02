@@ -40,14 +40,17 @@
     <style>
       /* Rodiny písem z fonts.yaml → CSS proměnné (jediný zdroj; v site.css se jen používají) */
       :root {
-        --serif: {{ fonts.serif | safe }};
-        --sans: {{ fonts.sans | safe }};
-        --cascadia: {{ fonts.mono | safe }};
+        --font-headings: {{ fonts.headings | safe }};
+        --font-text: {{ fonts.text | safe }};
+        --font-mono: {{ fonts.mono | safe }};
       }
     </style>
 
     <!-- Vlastní styl webu -->
     <link href="/css/site.css" rel="stylesheet" />
+
+    <!-- Barevná paleta (vyber v src/_data/site.yaml → palette; soubory v css/palettes/) -->
+    <link href="/css/palettes/{{ site.palette or 'rez-a-orech' }}.css" rel="stylesheet" />
 
     <!-- Téma zvýraznění kódu (vyber v src/_data/site.yaml → codeTheme; soubory v css/code-themes/) -->
     <link href="/css/code-themes/{{ site.codeTheme or 'vsdark' }}.css" rel="stylesheet" />
@@ -127,7 +130,7 @@
       <footer class="sidebar-footer">
         <div class="social">
           {# Sociální sítě se definují v src/_data/site.yaml (pole "social").
-             Přidání/úprava/zapnutí odkazu = úprava JSONu, ne této šablony.
+             Přidání/úprava/zapnutí odkazu = úprava YML, ne této šablony.
              "icon" je název ikony z Bootstrap Icons (https://icons.getbootstrap.com).
              Zobrazí se jen položky s "enabled": true. #}
           {% for item in site.social %}
@@ -143,7 +146,7 @@
           {% endfor %}
         </div>
 
-        <p class="sidebar-copy">© <span id="year">2026</span> Ryutaro</p>
+        <p class="sidebar-copy">&copy;<span id="year">2026</span> Ryutaro.cz</p>
         <p class="sidebar-credit">
           Postaveno na <a href="https://www.11ty.dev/" target="_blank" rel="noopener">Eleventy</a>
           &amp; <a href="https://getbootstrap.com/" target="_blank" rel="noopener">Bootstrap</a>.
@@ -152,7 +155,7 @@
           vzhled dle tématu <a href="https://github.com/poole/hyde" target="_blank" rel="noopener">Hyde</a>,
           písma {% for f in fonts.google %}<a href="https://fonts.google.com/specimen/{{ f.name | replace(' ', '+') }}" target="_blank" rel="noopener">{{ f.name | replace(' ', '&nbsp;') | safe }}</a>{% if loop.revindex0 == 1 %} &amp; {% elif not loop.last %}, {% endif %}{% endfor %}.
         </p>
-        <p class="sidebar-credit">Vytvořeno s&nbsp;<a href="https://claude.com/claude-code" target="_blank" rel="noopener">Claude&nbsp;Code</a> · model Claude&nbsp;Opus&nbsp;4.8</p>
+        <!--p class="sidebar-credit">Vytvořeno s&nbsp;<a href="https://claude.com/claude-code" target="_blank" rel="noopener">Claude&nbsp;Code</a> · model Claude&nbsp;Opus&nbsp;4.8</p-->
       </footer>
     </aside>
 

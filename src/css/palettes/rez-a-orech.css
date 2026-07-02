@@ -1,0 +1,24 @@
+/* Paleta: Rez & ořech (teplá). Vybírá se v site.yaml → palette. */
+/* Boční panel — tmavý, laděný na paletu; stejný v obou režimech. */
+:root {
+  --side-bg: #15110d;
+  --side-ink: #e8ddce;
+  --side-soft: #b0a08e;
+  --side-accent: #d98a5f;
+}
+[data-bs-theme="dark"] {
+  --ground: #15110d;
+  --content-bg: #1b1611;
+  --content-ink: #e8ddce;
+  --content-soft: #b0a08e;
+  --rule: rgba(255, 235, 220, 0.10);
+  --accent: #d98a5f;
+}
+[data-bs-theme="light"] {
+  --ground: #ece5da;
+  --content-bg: #f5efe6;
+  --content-ink: #322620;
+  --content-soft: #786353;
+  --rule: rgba(50, 30, 20, 0.12);
+  --accent: #a24b2e;
+}

@@ -108,6 +108,8 @@ export default function (eleventyConfig) {
     type: "atom",
     outputPath: "/feed.xml",
     collection: { name: "posts", limit: 0 },
+    // XSLT styl pro hezké zobrazení kanálu v prohlížeči (soubor viz src/feed.xsl)
+    stylesheet: "/feed.xsl",
     metadata: {
       language: "cs",
       title: "Ryutaro.cz",
@@ -140,6 +142,7 @@ export default function (eleventyConfig) {
 
   // Statické soubory kopírované 1:1 do _site
   eleventyConfig.addPassthroughCopy("src/css");
+  eleventyConfig.addPassthroughCopy("src/feed.xsl");
   eleventyConfig.addPassthroughCopy("src/img");
   eleventyConfig.addPassthroughCopy("src/apps");
   eleventyConfig.addPassthroughCopy("src/favicon.ico");
@@ -176,6 +179,9 @@ export default function (eleventyConfig) {
     })
   );
 
+  eleventyConfig.addFilter("datumISO", (date) => 
+    new Date(date).toISOString()
+  );
   // Původní řešení (ruční názvy měsíců) — nezávislé na ICU datech běhového prostředí.
   // Kdyby Intl/cs-CZ nebylo k dispozici, odkomentuj tohle a smaž verzi výše:
   // const MESICE = [

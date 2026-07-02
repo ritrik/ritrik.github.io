@@ -1,16 +1,17 @@
 # Písma (Eleventy global data → v šablonách jako `fonts.*`).
-#   google      = písma načtená z Google Fonts (name = popisek pro odkaz, spec = dotaz CSS2 API)
-#   serif/sans/mono = rodiny dosazené do CSS proměnných --serif/--sans/--cascadia
-# Swap písma = úprava tady, nic jiného. `spec` musí být v uvozovkách (obsahuje : a @).
+#   google              = písma načtená z Google Fonts (name = popisek pro odkaz, spec = dotaz CSS2 API)
+#   headings/text/mono  = rodiny dosazené do CSS proměnných --font-headings / --font-text / --font-mono
+# „headings" je nadpisové písmo bez ohledu na styl (klidně sans). Swap písma = úprava tady.
+# `spec` musí být v uvozovkách (obsahuje : a @).
 
 google:
-  - name: Fraunces
-    spec: "Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900"
-  - name: PT Sans
-    spec: "PT+Sans:ital,wght@0,400;0,700;1,400"
+  - name: Outfit
+    spec: "Outfit:wght@400;500;600;700"
+  - name: Lato
+    spec: "Lato:ital,wght@0,400;0,700;1,400"
   - name: Cascadia Code
     spec: "Cascadia+Code:ital,wght@0,200..700;1,200..700"
 
-serif: '"Fraunces", Georgia, "Times New Roman", serif'
-sans: '"PT Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif'
+headings: '"Outfit", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif'
+text: '"Lato", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif'
 mono: '"Cascadia Code", SFMono-Regular, "SF Mono", Menlo, Consolas, ui-monospace, monospace'

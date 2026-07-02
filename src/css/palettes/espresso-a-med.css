@@ -1,0 +1,23 @@
+/* Paleta: Espresso & měď (teplá). Vybírá se v site.yaml → palette. */
+:root {
+  --side-bg: #131110;
+  --side-ink: #e9e1d7;
+  --side-soft: #ab9f92;
+  --side-accent: #d69a6b;
+}
+[data-bs-theme="dark"] {
+  --ground: #131110;
+  --content-bg: #1a1714;
+  --content-ink: #e9e1d7;
+  --content-soft: #ab9f92;
+  --rule: rgba(255, 240, 228, 0.10);
+  --accent: #d69a6b;
+}
+[data-bs-theme="light"] {
+  --ground: #e9e3db;
+  --content-bg: #f4efe9;
+  --content-ink: #2e2721;
+  --content-soft: #766c60;
+  --rule: rgba(45, 35, 25, 0.12);
+  --accent: #b06a3f;
+}

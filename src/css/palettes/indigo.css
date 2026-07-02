@@ -1,0 +1,23 @@
+/* Paleta: Indigo (modrá). Vybírá se v site.yaml → palette. */
+:root {
+  --side-bg: #0f0e15;
+  --side-ink: #e0dded;
+  --side-soft: #9a94ab;
+  --side-accent: #8b92ee;
+}
+[data-bs-theme="dark"] {
+  --ground: #0f0e15;
+  --content-bg: #16151f;
+  --content-ink: #e0dded;
+  --content-soft: #9a94ab;
+  --rule: rgba(220, 215, 255, 0.10);
+  --accent: #8b92ee;
+}
+[data-bs-theme="light"] {
+  --ground: #e7e6ef;
+  --content-bg: #f5f4fb;
+  --content-ink: #26242f;
+  --content-soft: #5f5b6e;
+  --rule: rgba(40, 35, 60, 0.12);
+  --accent: #4b53c4;
+}

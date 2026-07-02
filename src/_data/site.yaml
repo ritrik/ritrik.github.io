@@ -6,6 +6,10 @@ tagline: Osobní web
 lang: cs-CZ
 url: https://ryutaro.cz
 
+# Barevná paleta webu — soubor z src/css/palettes/ (bez přípony).
+# Možnosti: rez-a-orech · espresso-a-med · indigo · mlzna-modra
+palette: rez-a-orech
+
 # Téma zvýraznění kódu — soubor z src/css/code-themes/ (bez přípony)
 codeTheme: vsdark
 

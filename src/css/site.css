@@ -6,19 +6,16 @@
    ========================================================================= */
 
 /* ---- Písma ----
-   Rodiny --serif / --sans / --cascadia se nastavují v src/_data/fonts.yaml
-   (klíč „fonts") a dosazují se přes <style> v base.njk. Tady se už jen používají. */
+   Rodiny --font-headings / --font-text / --font-mono se nastavují v src/_data/fonts.yaml
+   a dosazují se přes <style> v base.njk. Tady se už jen používají. */
 :root {
   /* Role písem — sem stačí sáhnout, když chceš jiné písmo.
-     Ukazují na rodiny --serif / --sans / --cascadia z fonts.yaml. */
-  --font-brand: var(--serif); /* hlavní nadpis v panelu „Ryutaro web" */
-  --font-nav: var(--sans);    /* odkazy v navigaci */
+     Ukazují na rodiny --font-headings / --font-text z fonts.yaml. */
+  --font-brand: var(--font-headings); /* hlavní nadpis v panelu „Ryutaro web" */
+  --font-nav: var(--font-text);       /* odkazy v navigaci */
 
-  /* Boční panel zůstává tmavý v obou režimech (signatura tématu Hyde) */
-  /* Pozadí jemně posunuté do tepla (varianta „Teplá 3") */
-  --side-bg: #24281e;
-  --side-ink: #e9eeec;
-  --side-soft: rgba(233, 238, 236, 0.55);
+  /* Barvy bočního panelu (--side-bg / --side-ink / --side-soft / --side-accent) nastavuje
+     zvolená paleta v css/palettes/ — panel je tmavý a laděný na paletu (v obou režimech). */
   --side-rule: rgba(255, 255, 255, 0.12);
 
   --maxw-content: 38rem;
@@ -26,46 +23,33 @@
   --topbar-h: 3.4rem; /* výška mobilní lišty s burger tlačítkem */
 }
 
+/* Barvy obsahu (--ground, --content-bg, --content-ink, --content-soft, --rule, --accent)
+   nastavuje zvolená paleta v css/palettes/ (viz site.yaml → palette), zvlášť pro dark/light.
+   Tady zůstávají jen barvy coveru (fotka) a vsazeného kódu — společné všem paletám. */
+
 /* ---- Tmavý režim (výchozí) ---- */
 [data-bs-theme="dark"] {
-  --ground: #14140e;
-  --content-bg: #1c1f15;
-  --content-ink: #dfe6e4;
-  --content-soft: #9fb0ac;
-  --rule: rgba(255, 255, 255, 0.10);
-  --accent: #8fae9e;
   --cover-scrim: rgba(8, 14, 14, 0.50);
   --cover-vignette: rgba(0, 0, 0, 0.5);
   --cover-ink: #f1f4f3;
   --cover-shadow: 0 0.05rem 0.25rem rgba(0, 0, 0, 0.55);
-
-  /* Pozadí vsazeného kódu `takhle` (barvy bloků kódu řeší zvolené téma
-     v css/code-themes/ — viz site.yaml → codeTheme) */
   --inline-code-bg: rgba(255, 255, 255, 0.06);
 }
 
 /* ---- Světlý režim ---- */
 [data-bs-theme="light"] {
-  --ground: #ede8da;
-  --content-bg: #f8f4e9;
-  --content-ink: #293433;
-  --content-soft: #5d6b69;
-  --rule: rgba(20, 30, 30, 0.12);
-  --accent: #3f6a57;
-  --cover-scrim: rgba(230, 236, 235, 0.28);
+  --cover-scrim: transparent; /* denní režim: fotka na úvodu bez barevného overlay */
   --cover-vignette: rgba(255, 255, 255, 0.30);
   --cover-ink: #1b2423;
-  --cover-shadow: 0 0.05rem 0.2rem rgba(255, 255, 255, 0.55);
-
-  /* Pozadí vsazeného kódu `takhle` (barvy bloků kódu řeší zvolené téma
-     v css/code-themes/ — viz site.yaml → codeTheme) */
+  /* Stejný (tmavý) stín jako v noci — bez fotku-přesvětlujícího bílého „halo" */
+  --cover-shadow: 0 0.05rem 0.25rem rgba(0, 0, 0, 0.55);
   --inline-code-bg: rgba(0, 0, 0, 0.055);
 }
 
 /* ---- Základ ---- */
 body {
   margin: 0;
-  font-family: var(--sans);
+  font-family: var(--font-text);
   background-color: var(--ground);
   color: var(--content-ink);
   -webkit-font-smoothing: antialiased;
@@ -115,7 +99,7 @@ body {
   margin: 0.6rem 0 0;
 }
 .sidebar-brand a {
-  color: #fff;
+  color: var(--side-ink);
   text-decoration: none;
 }
 .sidebar-tagline {
@@ -139,10 +123,10 @@ body {
   letter-spacing: 0.1em;
 }
 .sidebar-nav-item:hover {
-  color: #fff;
+  color: var(--side-ink);
 }
 .sidebar-nav-item.active {
-  color: #fff;
+  color: var(--side-accent);
   font-weight: 700;
 }
 /* Položka menu vykreslená jen jako ikona (např. RSS) */
@@ -217,7 +201,7 @@ body {
 }
 .theme-toggle:hover {
   opacity: 1;
-  color: #fff;
+  color: var(--side-ink);
 }
 .theme-ico {
   font-size: 1.05rem;
@@ -241,7 +225,7 @@ body {
   transition: opacity 0.2s, color 0.2s;
 }
 .social-link:hover {
-  color: #fff;
+  color: var(--side-ink);
   opacity: 1;
 }
 .social-link i {
@@ -267,7 +251,7 @@ body {
   text-decoration-color: rgba(255, 255, 255, 0.25);
 }
 .sidebar-credit a:hover {
-  color: #fff;
+  color: var(--side-ink);
 }
 
 /* =========================================================================
@@ -284,7 +268,7 @@ body {
 }
 
 .content h1 {
-  font-family: var(--serif);
+  font-family: var(--font-headings);
   font-weight: 400;
   line-height: 1.15;
   font-size: 2.1rem;
@@ -308,14 +292,14 @@ body {
    Bohatší typografie uvnitř článků (nadpisy, seznamy, citace, obrázky, tabulky)
    ========================================================================= */
 .content h2 {
-  font-family: var(--serif);
+  font-family: var(--font-headings);
   font-weight: 400;
   font-size: 1.6rem;
   line-height: 1.2;
   margin: 2.2rem 0 0.6rem;
 }
 .content h3 {
-  font-family: var(--serif);
+  font-family: var(--font-headings);
   font-weight: 400;
   font-size: 1.3rem;
   margin: 1.8rem 0 0.5rem;
@@ -546,7 +530,7 @@ body {
   padding-top: 0;
 }
 .post-list h2 {
-  font-family: var(--serif);
+  font-family: var(--font-headings);
   font-weight: 400;
   font-size: 1.5rem;
   margin: 0 0 0.2rem;
@@ -628,7 +612,7 @@ a.post-tag:hover {
 
 /* Jednotlivý článek */
 .post-title {
-  font-family: var(--serif);
+  font-family: var(--font-headings);
   font-weight: 400;
 }
 
@@ -671,7 +655,7 @@ a.post-tag:hover {
    ========================================================================= */
 .content pre,
 .content code {
-  font-family: var(--cascadia);
+  font-family: var(--font-mono);
   font-size: 0.86rem;
 }
 
@@ -822,7 +806,7 @@ a.post-tag:hover {
   padding: 2rem;
 }
 .cover-heading {
-  font-family: var(--serif);
+  font-family: var(--font-headings);
   font-weight: 400;
   font-size: clamp(2.4rem, 6.5vw, 4.2rem);
   line-height: 1.05;
@@ -911,11 +895,11 @@ a.post-tag:hover {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  font-family: var(--serif);
+  font-family: var(--font-headings);
   font-weight: 400;
   font-size: 1.3rem;
   line-height: 1;
-  color: #fff;
+  color: var(--side-ink);
   text-decoration: none;
 }
 .topbar-logo {

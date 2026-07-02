@@ -1,0 +1,23 @@
+/* Paleta: Mlžná modrá (modrá). Vybírá se v site.yaml → palette. */
+:root {
+  --side-bg: #0f1215;
+  --side-ink: #dbe3ea;
+  --side-soft: #93a3b0;
+  --side-accent: #9fbcd2;
+}
+[data-bs-theme="dark"] {
+  --ground: #0f1215;
+  --content-bg: #161a1e;
+  --content-ink: #dbe3ea;
+  --content-soft: #93a3b0;
+  --rule: rgba(205, 222, 235, 0.10);
+  --accent: #9fbcd2;
+}
+[data-bs-theme="light"] {
+  --ground: #e8eaec;
+  --content-bg: #f5f7f9;
+  --content-ink: #28313a;
+  --content-soft: #61707c;
+  --rule: rgba(35, 50, 60, 0.12);
+  --accent: #5b7c99;
+}
