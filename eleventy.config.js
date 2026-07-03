@@ -19,6 +19,9 @@ import markdownItToc from "markdown-it-table-of-contents";
 import markdownItMathjax3 from "markdown-it-mathjax3";
 import markdownItImageFigures from "markdown-it-image-figures";
 import { load as yamlLoad } from "js-yaml";
+import { minify } from "html-minifier-terser";
+import { transform as lightningcss } from "lightningcss";
+import { minify as minifyJs } from "terser";
 
 // Bezdiakritický slug pro id nadpisů (česky → hezké kotvy)
 const slugify = (s) =>
@@ -30,6 +33,10 @@ const slugify = (s) =>
     .replace(/^-+|-+$/g, "");
 
 export default function (eleventyConfig) {
+  // Produkční build (`npm run build`) vs vývoj (`npm run serve`/`--watch`).
+  // V dev vynecháme drahé kroky (minifikace, zpracování obrázků) → rychlejší náhled.
+  const isProd = process.env.ELEVENTY_RUN_MODE === "build";
+
   // Datové soubory v _data smí být i YAML (.yaml/.yml), nejen JSON.
   eleventyConfig.addDataExtension("yaml,yml", (contents) => yamlLoad(contents));
 
@@ -119,20 +126,8 @@ export default function (eleventyConfig) {
     },
   });
 
-  // Responzivní obrázky: transformace zpracuje <img> ve výstupu (resize + webp + srcset).
-  // Logo má v base.njk atribut eleventy:ignore, aby zůstalo jako <picture> se SVG.
-  eleventyConfig.addPlugin(eleventyImageTransformPlugin, {
-    formats: ["webp", "jpeg"],
-    widths: [320, 640, 960, 1280],
-    defaultAttributes: {
-      loading: "lazy",
-      decoding: "async",
-      sizes: "(min-width: 48em) 38rem, 100vw",
-    },
-  });
-
   // Úklid: eleventy-img u <img> uvnitř <picture> nechává po sobě atribut
-  // „eleventy:ignore" (slouží jen k přeskočení transformace). Odstraníme ho z HTML.
+  // „eleventy:ignore" (slouží jen k přeskočení transformace). Odstraníme ho z HTML (vždy).
   eleventyConfig.addTransform("strip-eleventy-ignore", function (content) {
     if (this.page && this.page.outputPath && this.page.outputPath.endsWith(".html")) {
       return content.replace(/\s+eleventy:ignore(="")?/g, "");
@@ -140,8 +135,58 @@ export default function (eleventyConfig) {
     return content;
   });
 
+  // ===== Produkce vs vývoj =====
+  // Produkce (`npm run build`): minifikace HTML/CSS/JS + zpracování obrázků (webp + srcset).
+  // Vývoj (`npm run serve`/`--watch`): CSS/JS se jen kopírují (bez minifikace, čitelné zdroje)
+  // a obrázky se nezpracovávají → rychlejší serve; v obsahu se ukáže originál z /img.
+  if (isProd) {
+    // Responzivní obrázky (logo má v base.njk eleventy:ignore, zůstává <picture> se SVG)
+    eleventyConfig.addPlugin(eleventyImageTransformPlugin, {
+      formats: ["webp", "jpeg"],
+      widths: [320, 640, 960, 1280],
+      defaultAttributes: {
+        loading: "lazy",
+        decoding: "async",
+        sizes: "(min-width: 48em) 38rem, 100vw",
+      },
+    });
+
+    // Minifikace HTML (i inline CSS/JS). Kód v <pre> zůstává nedotčený.
+    eleventyConfig.addTransform("html-minify", async function (content) {
+      if (this.page && this.page.outputPath && this.page.outputPath.endsWith(".html")) {
+        return await minify(content, { useShortDoctype: true, collapseWhitespace: true, removeComments: true, minifyCSS: true, minifyJS: true });
+      }
+      return content;
+    });
+
+    // Minifikace CSS (lightningcss) a JS (terser) přes „addExtension" — výstupní cesty (/css, /js) zůstávají.
+    eleventyConfig.addTemplateFormats("css");
+    eleventyConfig.addExtension("css", {
+      outputFileExtension: "css",
+      compile: async (content, inputPath) => {
+        return async () => {
+          const { code } = lightningcss({ filename: inputPath, code: Buffer.from(content), minify: true });
+          return code.toString();
+        };
+      },
+    });
+    eleventyConfig.addTemplateFormats("js");
+    eleventyConfig.addExtension("js", {
+      outputFileExtension: "js",
+      compile: async (content) => {
+        return async () => {
+          const { code } = await minifyJs(content);
+          return code;
+        };
+      },
+    });
+  } else {
+    // Vývoj: CSS/JS jen zkopírovat 1:1 (bez minifikace)
+    eleventyConfig.addPassthroughCopy("src/css");
+    eleventyConfig.addPassthroughCopy("src/js");
+  }
+
   // Statické soubory kopírované 1:1 do _site
-  eleventyConfig.addPassthroughCopy("src/css");
   eleventyConfig.addPassthroughCopy("src/feed.xsl");
   eleventyConfig.addPassthroughCopy("src/img");
   eleventyConfig.addPassthroughCopy("src/apps");

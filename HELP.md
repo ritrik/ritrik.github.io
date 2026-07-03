@@ -174,8 +174,9 @@ social:
     icon: envelope
 ```
 
-Externí odkazy (`http…`) se otevřou v novém okně samy; u Mastodonu lze přidat
-`rel: me noopener`.
+Externí odkazy (`http…`) se otevřou v novém okně samy. U **interní** adresy (např. RSS
+`url: /feed.xml`) přidej `newTab: true`, ať se taky otevře v nové záložce. U Mastodonu
+lze přidat `rel: me noopener`.
 
 #### Písma — `src/_data/fonts.yaml`
 
@@ -184,30 +185,39 @@ jednom místě se řídí načtení z Google Fonts i dosazení do CSS:
 
 ```yaml
 google:
-  - name: Fraunces
-    spec: "Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900"
-  - name: PT Sans
-    spec: "PT+Sans:ital,wght@0,400;0,700;1,400"
-serif: '"Fraunces", Georgia, serif'
-sans: '"PT Sans", -apple-system, sans-serif'
-mono: '"Cascadia Code", monospace'
+  - name: Outfit
+    spec: "Outfit:wght@400;500;600;700"
+  - name: Lato
+    spec: "Lato:ital,wght@0,400;0,700;1,400"
+  - name: Cascadia Code
+    spec: "Cascadia+Code:ital,wght@0,200..700;1,200..700"
+headings: '"Outfit", -apple-system, sans-serif'   # nadpisy
+text: '"Lato", -apple-system, sans-serif'         # běžný text
+mono: '"Cascadia Code", monospace'                # kód
 ```
 
 Swap písma = uprav `spec` (dotaz [Google Fonts](https://fonts.google.com/); kvůli `:` a `@`
-musí být v uvozovkách) a odpovídající rodinu (`serif`/`sans`/`mono` — v jednoduchých
-uvozovkách). Šablona z toho sama poskládá `<link>` i CSS proměnné. (Role nadpisu/navigace
-lze doladit proměnnými `--font-brand`/`--font-nav` v `site.css`.)
+musí být v uvozovkách) a odpovídající rodinu (`headings`/`text`/`mono` — v jednoduchých
+uvozovkách). Šablona z toho sama poskládá `<link>` i CSS proměnné
+`--font-headings`/`--font-text`/`--font-mono`. (Role nadpisu/navigace lze doladit
+proměnnými `--font-brand`/`--font-nav` v `site.css`.)
 
 ### Barvy a vzhled
 
-V `src/css/site.css`. Barvy jsou **CSS proměnné** zvlášť pro oba režimy:
+Barevných **palet** je několik; vybíráš ji jedním slovem v `site.yaml`:
 
-```css
-[data-bs-theme="dark"]  { /* barvy pro noční režim */ }
-[data-bs-theme="light"] { /* barvy pro denní režim */ }
+```yaml
+palette: rez-a-orech
 ```
 
-Boční panel zůstává tmavý v **obou** režimech (signatura tématu Hyde).
+Na výběr (soubory v `src/css/palettes/`): `rez-a-orech`, `espresso-a-med`, `indigo`,
+`mlzna-modra`. Každá paleta drží barvy pro noční i denní režim (CSS proměnné `--ground`,
+`--content-*`, `--accent`, `--side-*`) a taky barvy **calloutů** `--callout-note` /
+`--callout-tip` / `--callout-warning` (odstíny note/tip/warning, laděné ke každé paletě).
+Vlastní paleta = zkopíruj soubor, uprav proměnné, nastav `palette` na jeho název.
+
+Zbytek stylu (rozvržení, mezery, komponenty) je v `src/css/site.css`; callout pravidla tam
+jen čtou proměnné z palety. Boční panel zůstává tmavý v **obou** režimech (signatura Hyde).
 
 ### Téma zvýraznění kódu
 
@@ -263,16 +273,18 @@ Obrázky lze zarovnat třídami `img-left` / `img-right` / `img-center`.
 
 ## 7. Obrázky a RSS
 
-- **Responzivní obrázky:** obrázky v článcích se při buildu samy zmenší do více velikostí,
-  převedou na `webp` a načítají se „líně" (rychlejší web). Stačí psát běžný Markdown
-  `![popis](/img/soubor.jpg)` — o zbytek se postará plugin. (Logo je z toho vyňaté.)
+- **Responzivní obrázky:** při **produkčním** buildu se obrázky v článcích samy zmenší do více
+  velikostí, převedou na `webp` a načítají se „líně" (rychlejší web). Stačí psát běžný Markdown
+  `![popis](/img/soubor.jpg)` — o zbytek se postará plugin. (Logo je z toho vyňaté; v `npm run
+  serve` se pro rychlost obrázky nezpracovávají a ukáže se originál.)
 - **Popisek pod obrázkem (`<figure>`):** každý samostatný obrázek se automaticky obalí do
   `<figure>` — **HTML psát netřeba**. Popisek přidáš titulkem v uvozovkách za adresou:
   `![alt text](/img/foto.jpg "Tohle je popisek")` → popisek se zobrazí pod obrázkem
   (text v `alt` zůstává zvlášť, kvůli přístupnosti). Zarovnání obrázku zůstává přes třídy
   `img-left` / `img-right` / `img-center`.
 - **RSS kanál:** blog má feed na `/feed.xml` (odkaz je i v hlavičce stránky), takže se
-  dá odebírat ve čtečkách. Generuje se sám z článků.
+  dá odebírat ve čtečkách. Generuje se sám z článků. Otevřený přímo v prohlížeči se
+  zobrazí **ostylovaný** (ne holé XML) díky XSLT stylu `src/feed.xsl`; čtečky styl ignorují.
 
 ---
 
@@ -291,6 +303,10 @@ je potřeba `pathPrefix` v `eleventy.config.js`.
 
 - **Z internetu (CDN) bez ověřovacích SRI hashů** se načítají Bootstrap, Bootstrap Icons
   a Google Fonts. Když je budeš chtít ověřené, doplň atribut `integrity`.
+- **Produkční build vs náhled:** `npm run build` (a nasazení) **minifikuje** HTML, CSS i JS
+  a zpracuje obrázky. `npm run serve` je naopak **rychlý** — neminifikuje ani nezpracovává
+  obrázky a servíruje čitelné zdroje (hodí se pro ladění). Interaktivita webu je v jednom souboru
+  `src/js/site.js` (načítá se zvlášť, aby se cachoval napříč stránkami).
 - **Ukázkové texty a články** jsou jen výplň — klidně je přepiš nebo smaž.
 - **Každý článek** má nahoře i dole odkaz „← Zpět na blog" — přidává ho šablona
   `post.njk` automaticky, nemusíš ho psát.

@@ -8,7 +8,7 @@ url: https://ryutaro.cz
 
 # Barevná paleta webu — soubor z src/css/palettes/ (bez přípony).
 # Možnosti: rez-a-orech · espresso-a-med · indigo · mlzna-modra
-palette: rez-a-orech
+palette: mlzna-modra
 
 # Téma zvýraznění kódu — soubor z src/css/code-themes/ (bez přípony)
 codeTheme: vsdark
@@ -44,6 +44,7 @@ social:
     url: /feed.xml
     enabled: true
     icon: rss-fill
+    newTab: true   # interní adresa → jinak by se otevřela ve stejné záložce
   - label: LinkedIn
     url: https://linkedin.com/UZIVATEL
     enabled: false

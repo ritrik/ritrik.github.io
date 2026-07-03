@@ -21,8 +21,9 @@ npm run build   # build do _site/
 ## Kde co je
 - `eleventy.config.js` — vstup `src/`, výstup `_site/`. Registruje:
   - **syntax highlight** (Prism, build-time; `alwaysWrapLineHighlights` kvůli číslům řádků),
-  - **RSS/Atom** kanál `@11ty/eleventy-plugin-rss` → `/feed.xml` (z kolekce `posts`),
-  - **responzivní obrázky** `@11ty/eleventy-img` (HTML transform: webp + `srcset` + lazy),
+  - **RSS/Atom** kanál `@11ty/eleventy-plugin-rss` → `/feed.xml` (z kolekce `posts`;
+    XSLT styl `src/feed.xsl` pro zobrazení v prohlížeči přes volbu `stylesheet`),
+  - **responzivní obrázky** `@11ty/eleventy-img` (HTML transform: webp + `srcset` + lazy) — jen v produkci,
   - **rozšíření Markdownu** přes `amendLibrary("md", …)` — markdown-it: attrs, anchor
     (kotva = ikonka odkazu za nadpisem, `linkInsideHeader`), container (callouty
     note/tip/warning), mark, footnote, deflist, abbr, sub, sup, ins, emoji, task-lists,
@@ -31,23 +32,36 @@ npm run build   # build do _site/
   - **preprocessor `drafts`** — článek s `draft: true` se vyřadí z produkčního buildu
     (`ELEVENTY_RUN_MODE === "build"`), v dev (`serve`) je vidět s odznakem „Koncept".
   - kolekce `posts` a `tagList`, filtr `datumCZ`, bezdiakritický `slugify` pro kotvy nadpisů,
-    transform `strip-eleventy-ignore` (úklid atributu po eleventy-img).
+    transform `strip-eleventy-ignore` (úklid atributu po eleventy-img, vždy).
+  - **produkce vs vývoj** (proměnná `isProd = ELEVENTY_RUN_MODE === "build"`, jedna sekce
+    v configu): v **produkci** minifikace HTML (`html-minifier-terser`, i inline CSS/JS),
+    CSS (`lightningcss`) a JS (`terser`) přes `addExtension` + zpracování obrázků; ve **vývoji**
+    (`serve`/`watch`) se CSS/JS jen kopírují (passthrough) a obrázky se nezpracovávají → rychlejší serve.
 - `src/_includes/base.njk` — **jediná hlavní šablona**: mobilní lišta s burgerem, boční
   panel (logo → název → tagline → nav → patička: sociální sítě + kredity), obsah. Přepínač
   den/noc (ukládá do `localStorage`). Rodiny písem se dosazují z `fonts.yaml` přes inline
-  `<style>`. Logo je `<picture>` (SVG + PNG fallback) s `eleventy:ignore`, aby ho
-  eleventy-img nepřepsal. Front-matter `cover: true` zapne fotku lesa na pozadí (úvod).
+  `<style>`. Interaktivita (den/noc, burger menu, kopírování kódu, submenu) je v externím
+  `src/js/site.js`; inline v `<head>` zůstává jen krátký „no-flash" skript. Logo je `<picture>`
+  (SVG + PNG fallback) s `eleventy:ignore`, aby ho eleventy-img nepřepsal. Front-matter
+  `cover: true` zapne fotku lesa na pozadí (úvod).
 - `src/_includes/post.njk` — šablona článku (odkaz „← Zpět na blog" nahoře i dole,
   titulek, datum, štítky, odznak „Koncept" u draftů).
 - `src/css/site.css` — veškerý styl. Barvy jsou CSS proměnné pro `[data-bs-theme="dark"]`
   a `[data-bs-theme="light"]` (pozadí teple laděné). Boční panel zůstává tmavý v obou
-  režimech. **Rodiny písem (`--serif/--sans/--cascadia`) se sem nepíšou** — jsou v `fonts.yaml`.
-- `src/css/code-themes/*.css` — tmavá témata zvýraznění kódu; aktivní vybírá
-  `site.yaml → codeTheme` (výchozí `vsdark`).
+  režimech. **Barvy palety** (`--ground/--content-*/--accent/--side-*` + barvy calloutů
+  `--callout-note/tip/warning`) se sem nepíšou — jsou v `src/css/palettes/*.css`
+  (vybírá `site.yaml → palette`). Callout pravidla v `site.css` čtou jen tyhle proměnné
+  (s fallbackem). **Rodiny písem** (`--font-headings/--font-text/--font-mono`) taky ne —
+  jsou v `fonts.yaml`.
+- `src/css/palettes/*.css` — barevné palety (rez-a-orech, espresso-a-med, indigo, mlzna-modra),
+  včetně barev calloutů note/tip/warning (laděné ke každé paletě);
+  aktivní vybírá `site.yaml → palette`. `src/css/code-themes/*.css` — tmavá témata zvýraznění
+  kódu; aktivní vybírá `site.yaml → codeTheme` (výchozí `vsdark`).
+- `src/js/site.js` — interaktivita webu (den/noc, burger + focus-trap, kopírování kódu, submenu).
 - `src/index.njk` (cover), `src/about.md` (O mně — **Markdown**), `src/blog.njk` (výpis +
   filtr štítků), `src/posts/*.md` (články; `posts/posts.json` → šablona + URL `/blog/{slug}/`).
-- `src/_data/site.yaml` — název, tagline, jazyk, `url`, `codeTheme`, `nav`, `social` (YAML;
-  zapnuto přes `addDataExtension` + `js-yaml`). `src/_data/fonts.yaml` — písma (`fonts.*`).
+- `src/_data/site.yaml` — název, tagline, jazyk, `url`, `palette`, `codeTheme`, `nav`, `social`
+  (YAML; zapnuto přes `addDataExtension` + `js-yaml`). `src/_data/fonts.yaml` — písma (`fonts.*`).
 - `src/img/` — logo (`logo.svg` + `logo.png`) a responzivní fotky `background_*.jpg`.
   Favicon: `src/favicon.svg` (+ `favicon.ico` jako záloha) a apple-touch icon.
 - `src/apps/` — statické mini-aplikace (kopírují se 1:1), např. `/apps/timer/`.
@@ -59,7 +73,8 @@ npm run build   # build do _site/
 - **Menu, sociální sítě, téma kódu:** v `src/_data/site.yaml`; **písma** v `src/_data/fonts.yaml`
   (detaily v `HELP.md`).
   Položka v `nav`: nové okno/externí = `"newTab": true`; jen ikona = `"icon"` + `"label"`
-  (bez `text`); podmenu = `"children": [ … ]`.
+  (bez `text`); podmenu = `"children": [ … ]`. Položka v `social` se otevře v novém okně
+  u externích (`http…`) adres, nebo přes `newTab: true` (kvůli interním jako `/feed.xml`).
 - **Barvy / vzhled:** proměnné v `src/css/site.css`.
 - **Text úvodní stránky:** `src/index.njk`.
 

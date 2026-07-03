@@ -423,9 +423,18 @@ body {
 .callout > :last-child {
   margin-bottom: 0;
 }
+/* Odstíny note/tip/warning jsou v paletě (src/css/palettes/*.css); fallback pro jistotu */
+.callout-note {
+  border-left-color: var(--callout-note, #5f82a0);
+  background: color-mix(in srgb, var(--callout-note, #5f82a0) 12%, transparent);
+}
+.callout-tip {
+  border-left-color: var(--callout-tip, #6f8f5f);
+  background: color-mix(in srgb, var(--callout-tip, #6f8f5f) 12%, transparent);
+}
 .callout-warning {
-  border-left-color: #c2683c;
-  background: color-mix(in srgb, #c2683c 12%, transparent);
+  border-left-color: var(--callout-warning, #c2683c);
+  background: color-mix(in srgb, var(--callout-warning, #c2683c) 12%, transparent);
 }
 
 /* Zvýraznění (markdown-it-mark): ==text== */
@@ -474,7 +483,10 @@ body {
   text-decoration: underline;
 }
 
-/* Zaškrtávací seznamy (markdown-it-task-lists) */
+/* Zaškrtávací seznamy (markdown-it-task-lists).
+   Plugin vloží skutečný <input type="checkbox" disabled>; ten skryjeme a místo něj
+   vykreslíme ikonku z Bootstrap Icons (font už je načtený). Stav (zaškrtnuto) čteme
+   přes :has() z původního inputu — bez JS, bez zásahu do pluginu či šablony. */
 .content .contains-task-list {
   list-style: none;
   padding-left: 0.2rem;
@@ -484,8 +496,18 @@ body {
   align-items: baseline;
   gap: 0.5rem;
 }
-.content .task-list-item input {
-  accent-color: var(--accent);
+.content .task-list-item-checkbox {
+  display: none; /* skrýt nativní checkbox */
+}
+.content .task-list-item::before {
+  font-family: "bootstrap-icons";
+  content: "\f584"; /* bi-square — nezaškrtnuto */
+  color: var(--content-soft);
+  line-height: 1;
+}
+.content .task-list-item:has(.task-list-item-checkbox:checked)::before {
+  content: "\f26c"; /* bi-check-square-fill — zaškrtnuto */
+  color: var(--accent);
 }
 
 /* Obsah článku (markdown-it-table-of-contents): [[toc]] */

@@ -4,6 +4,11 @@
   --side-ink: #e0dded;
   --side-soft: #9a94ab;
   --side-accent: #8b92ee;
+  /* Callouty (:::note / :::tip / :::warning) — laděné k paletě, stejné v den i noc.
+     note posunuté do tyrkysu (ať se neplete s modrým accentem), warning teplejší kvůli kontrastu */
+  --callout-note: #4f93a0;
+  --callout-tip: #6b985f;
+  --callout-warning: #cf8a3d;
 }
 [data-bs-theme="dark"] {
   --ground: #0f0e15;
