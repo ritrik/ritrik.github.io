@@ -187,12 +187,12 @@ jednom místě se řídí načtení z Google Fonts i dosazení do CSS:
 google:
   - name: Outfit
     spec: "Outfit:wght@400;500;600;700"
-  - name: Lato
-    spec: "Lato:ital,wght@0,400;0,700;1,400"
+  - name: Source Sans 3
+    spec: "Source+Sans+3:ital,wght@0,400;0,700;1,400"
   - name: Cascadia Code
     spec: "Cascadia+Code:ital,wght@0,200..700;1,200..700"
 headings: '"Outfit", -apple-system, sans-serif'   # nadpisy
-text: '"Lato", -apple-system, sans-serif'         # běžný text
+text: '"Source Sans 3", -apple-system, sans-serif' # běžný text
 mono: '"Cascadia Code", monospace'                # kód
 ```
 
@@ -301,8 +301,13 @@ je potřeba `pathPrefix` v `eleventy.config.js`.
 
 ## 9. Dobré vědět
 
-- **Z internetu (CDN) bez ověřovacích SRI hashů** se načítají Bootstrap, Bootstrap Icons
-  a Google Fonts. Když je budeš chtít ověřené, doplň atribut `integrity`.
+- **Z internetu (CDN)** se načítají Bootstrap Reboot, Bootstrap Icons a Google Fonts.
+  Bootstrap Reboot a Icons mají **ověřovací SRI hash** (`integrity`) — když u nich zvýšíš verzi,
+  vezmi nový hash z jsDelivr, jinak je prohlížeč přestane načítat. Google Fonts hash nemají
+  (jejich CSS se generuje pokaždé jinak). Z Bootstrapu se bere jen **Reboot** (drobný reset
+  stylů), ne celý framework — rozvržení i vzhled jsou vlastní v `src/css/site.css`. Bootstrap
+  **JavaScript** se nenačítá vůbec, veškerá interaktivita je vlastní `src/js/site.js` — ten
+  navíc dostává v produkci **automaticky generovaný** SRI hash (o hlídání verze se starat nemusíš).
 - **Produkční build vs náhled:** `npm run build` (a nasazení) **minifikuje** HTML, CSS i JS
   a zpracuje obrázky. `npm run serve` je naopak **rychlý** — neminifikuje ani nezpracovává
   obrázky a servíruje čitelné zdroje (hodí se pro ladění). Interaktivita webu je v jednom souboru

@@ -26,11 +26,15 @@
       })();
     </script>
 
-    <!-- Bootstrap 5.3 (barevné režimy = den/noc) -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <!-- Z Bootstrapu potřebujeme jen Reboot (reset: box-sizing, dědění fontu u tlačítek…).
+         Grid/utility/komponenty nepoužíváme; Collapse pro podmenu je pár řádků v site.css.
+         Atribut data-bs-theme (den/noc) je jen selektor — funguje i s Rebootem. -->
+    {#<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap-reboot.min.css" rel="stylesheet" />#}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap-reboot.min.css" integrity="sha256-C1bN5QfPpNXSGfcd8uLQqbFL1vWJWDgYuHT7Am8PR/c=" crossorigin="anonymous">
 
     <!-- Bootstrap Icons (ikony sociálních sítí; názvy ikon viz site.yaml) -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet" />
+    {#<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet" />#}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css" integrity="sha256-pdY4ejLKO67E0CM2tbPtq1DJ3VGDVVdqAR6j3ZwdiE4=" crossorigin="anonymous">
 
     <!-- Písma — definovaná v src/_data/fonts.yaml, ne natvrdo tady.
          Swap písma = úprava fonts.yaml. -->
@@ -97,8 +101,9 @@
         <nav class="sidebar-nav">
           {% for item in site.nav %}
             {% if item.children %}
-              {# Rozbalovací skupina (submenu) — pohání Bootstrap Collapse.
-                 Otevře se sama, je-li aktivní některá pod-stránka; stav se pamatuje (viz JS). #}
+              {# Rozbalovací skupina (submenu) — pohání vlastní kód v site.js (třídy
+                 collapse/show z Bootstrap CSS). Otevře se sama, je-li aktivní některá
+                 pod-stránka; stav se pamatuje (viz JS). #}
               {% set groupActive = false %}
               {% for c in item.children %}
                 {% if (page.url == c.url) or (c.url != "/" and page.url.startsWith(c.url)) %}{% set groupActive = true %}{% endif %}
@@ -106,7 +111,6 @@
               {% set collapseId = "nav-collapse-" ~ loop.index %}
               <div class="sidebar-nav-group" data-nav-key="{{ item.text }}">
                 <button type="button" class="sidebar-nav-item sidebar-nav-toggle{% if not groupActive %} collapsed{% endif %}{% if groupActive %} active{% endif %}"
-                        data-bs-toggle="collapse" data-bs-target="#{{ collapseId }}"
                         aria-controls="{{ collapseId }}" aria-expanded="{{ 'true' if groupActive else 'false' }}">
                   {{ item.text }}<span class="caret" aria-hidden="true"></span>
                 </button>
@@ -168,10 +172,9 @@
       </div>
     </main>
 
-    <!-- Bootstrap JS (bundle s Popperem) -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
-    <!-- Interaktivita webu (externě, cachovatelné napříč stránkami) -->
-    <script src="/js/site.js"></script>
+    <!-- Interaktivita webu (externě, cachovatelné napříč stránkami). Bootstrap JS se
+         nenačítá vůbec — jediné, co se z něj používalo (Collapse pro podmenu), nahrazuje
+         vlastní kód v site.js. Z Bootstrapu zůstává jen CSS. -->
+    <script src="/js/site.js"{% if sriSiteJs %} integrity="{{ sriSiteJs }}"{% endif %}></script>
   </body>
 </html>

@@ -163,11 +163,28 @@ body {
   border-left-color: currentColor;
   transition: transform 0.2s ease;
 }
-/* Bootstrap Collapse přidává tlačítku třídu .collapsed, když je submenu zavřené */
+/* Tlačítko dostává třídu .collapsed, když je submenu zavřené (nastavuje site.js) */
 .sidebar-nav-toggle:not(.collapsed) .caret {
   transform: rotate(90deg);
 }
-/* Skrytí/zobrazení řeší Bootstrap (.collapse:not(.show){display:none}) */
+
+/* Collapse — dřív z plného Bootstrap CSS; teď z CDN načítáme jen Reboot, tak ho sem
+   doplňujeme (3 řádky). Používá vlastní JS podmenu (třídy .collapse/.collapsing/.show
+   v site.js): .collapse:not(.show) = sbaleno (skryté), .collapsing = přechod výšky. */
+.collapse:not(.show) {
+  display: none;
+}
+.collapsing {
+  height: 0;
+  overflow: hidden;
+  transition: height 0.35s ease;
+}
+@media (prefers-reduced-motion: reduce) {
+  .collapsing {
+    transition: none;
+  }
+}
+
 .sidebar-subnav {
   display: flex;
   flex-direction: column;

@@ -22,6 +22,8 @@ import { load as yamlLoad } from "js-yaml";
 import { minify } from "html-minifier-terser";
 import { transform as lightningcss } from "lightningcss";
 import { minify as minifyJs } from "terser";
+import { createHash } from "node:crypto";
+import { readFile } from "node:fs/promises";
 
 // Bezdiakritický slug pro id nadpisů (česky → hezké kotvy)
 const slugify = (s) =>
@@ -175,7 +177,7 @@ export default function (eleventyConfig) {
       outputFileExtension: "js",
       compile: async (content) => {
         return async () => {
-          const { code } = await minifyJs(content);
+          const { code } = await minifyJs(content); // výchozí volby (viz i sriSiteJs)
           return code;
         };
       },
@@ -185,6 +187,18 @@ export default function (eleventyConfig) {
     eleventyConfig.addPassthroughCopy("src/css");
     eleventyConfig.addPassthroughCopy("src/js");
   }
+
+  // SRI hash vlastního /js/site.js → v šabloně jako {{ sriSiteJs }} (viz base.njk).
+  // Jen v produkci: v dev se JS neminifikuje, měl by jiné bajty a prohlížeč by skript
+  // s nesedícím hashem zablokoval → v dev vrací false a atribut se nevloží.
+  // Počítá se z minifikovaného výstupu (stejné terser volání jako addExtension výše) při
+  // každém buildu, takže hash nikdy nezastará. site.js je same-origin → crossorigin netřeba.
+  eleventyConfig.addGlobalData("sriSiteJs", async () => {
+    if (!isProd) return false;
+    const raw = await readFile("src/js/site.js", "utf8");
+    const { code } = await minifyJs(raw);
+    return "sha384-" + createHash("sha384").update(code).digest("base64");
+  });
 
   // Statické soubory kopírované 1:1 do _site
   eleventyConfig.addPassthroughCopy("src/feed.xsl");
@@ -224,8 +238,10 @@ export default function (eleventyConfig) {
     })
   );
 
-  eleventyConfig.addFilter("datumISO", (date) => 
-    new Date(date).toISOString()
+  // Datum pro atribut <time datetime="…"> — články mají jen datum (bez času),
+  // proto YYYY-MM-DD (plný timestamp s půlnocí UTC by byl jen artefakt).
+  eleventyConfig.addFilter("datumISO", (date) =>
+    new Date(date).toISOString().slice(0, 10)
   );
   // Původní řešení (ruční názvy měsíců) — nezávislé na ICU datech běhového prostředí.
   // Kdyby Intl/cs-CZ nebylo k dispozici, odkomentuj tohle a smaž verzi výše:

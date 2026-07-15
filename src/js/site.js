@@ -1,6 +1,7 @@
 // Interaktivita webu Ryutaro (den/noc, rok v patičce, mobilní burger menu s focus-trapem,
-// tlačítko Kopírovat u kódu, zapamatování rozbaleného submenu).
+// tlačítko Kopírovat u kódu, rozbalovací podmenu vč. zapamatování stavu).
 // Externí soubor (cachovatelný napříč stránkami). No-flash skript zůstává inline v <head>.
+// Bootstrap JS se nenačítá — podmenu je vlastní náhrada Collapse (viz níže).
 (function () {
   var root = document.documentElement;
 
@@ -98,18 +99,65 @@
     pre.appendChild(copyBtn);
   });
 
+  // Rozbalovací podmenu v panelu — vlastní náhrada Bootstrap Collapse (jediné, co se
+  // z Bootstrap JS používalo; bundle se proto už nenačítá). Vzhled i animaci dělají
+  // hotové třídy z Bootstrap CSS: .collapse (sbaleno, display:none) / .collapsing
+  // (přechod výšky) / .collapse.show (rozbaleno). Pořadí kroků odpovídá originálu.
   document.querySelectorAll(".sidebar-nav-group").forEach(function (group) {
     var key = group.getAttribute("data-nav-key");
-    var target = group.querySelector(".sidebar-subnav");
+    var panel = group.querySelector(".sidebar-subnav");
     var btn = group.querySelector(".sidebar-nav-toggle");
-    if (!target) return;
-    if (key && localStorage.getItem("nav-open:" + key) === "1" && !target.classList.contains("show")) {
-      target.classList.add("show");
-      if (btn) { btn.classList.remove("collapsed"); btn.setAttribute("aria-expanded", "true"); }
+    if (!panel || !btn) return;
+
+    // Obnovit zapamatovaný stav (bez animace); skupinu s aktivní stránkou otevírá šablona
+    if (key && localStorage.getItem("nav-open:" + key) === "1" && !panel.classList.contains("show")) {
+      panel.classList.add("show");
+      btn.classList.remove("collapsed");
+      btn.setAttribute("aria-expanded", "true");
     }
-    if (key) {
-      target.addEventListener("shown.bs.collapse", function () { localStorage.setItem("nav-open:" + key, "1"); });
-      target.addEventListener("hidden.bs.collapse", function () { localStorage.setItem("nav-open:" + key, "0"); });
-    }
+
+    // Po doběhnutí přechodu uklidit třídy; setTimeout je pojistka pro případ,
+    // že přechod neproběhne (prefers-reduced-motion vypíná animace v Bootstrap CSS)
+    var afterTransition = function (fn) {
+      var ms = (parseFloat(getComputedStyle(panel).transitionDuration) || 0) * 1000;
+      var done = false;
+      var finish = function () { if (!done) { done = true; fn(); } };
+      panel.addEventListener("transitionend", finish, { once: true });
+      setTimeout(finish, ms + 50);
+    };
+
+    var animating = false;
+    btn.addEventListener("click", function () {
+      if (animating) return;
+      animating = true;
+      var open = panel.classList.contains("show");
+      if (open) {
+        // Sbalit: zafixovat aktuální výšku, reflow, pak přechod na 0 (výška z .collapsing)
+        panel.style.height = panel.getBoundingClientRect().height + "px";
+        void panel.offsetHeight;
+        panel.classList.add("collapsing");
+        panel.classList.remove("collapse", "show");
+        panel.style.height = "";
+        afterTransition(function () {
+          panel.classList.remove("collapsing");
+          panel.classList.add("collapse");
+          animating = false;
+        });
+      } else {
+        // Rozbalit: z 0 na výšku obsahu
+        panel.classList.remove("collapse");
+        panel.classList.add("collapsing");
+        panel.style.height = panel.scrollHeight + "px";
+        afterTransition(function () {
+          panel.classList.remove("collapsing");
+          panel.classList.add("collapse", "show");
+          panel.style.height = "";
+          animating = false;
+        });
+      }
+      btn.classList.toggle("collapsed", open);
+      btn.setAttribute("aria-expanded", open ? "false" : "true");
+      if (key) localStorage.setItem("nav-open:" + key, open ? "0" : "1");
+    });
   });
 })();

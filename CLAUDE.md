@@ -85,8 +85,16 @@ doménu (`src/CNAME` = `ryutaro.cz`). Pro projektovou stránku
 (`uzivatel.github.io/repo/`) je potřeba `pathPrefix` v `eleventy.config.js`.
 
 ## Pozn.
-- Z CDN bez SRI hashů se načítají **Bootstrap, Bootstrap Icons** a **Google Fonts**
-  (Fraunces + PT Sans + Cascadia Code). Když je budeš chtít ověřené, doplň `integrity`.
+- Z CDN se načítají **Bootstrap Reboot, Bootstrap Icons** (obojí s ručním `integrity`/SRI
+  hashem z jsDelivr) a **Google Fonts** (Outfit + Source Sans 3 + Cascadia Code; bez SRI — ta CSS je
+  generovaná per-request, hash by neseděl). Vlastní `/js/site.js` dostává v **produkci**
+  automaticky generovaný SRI `integrity` (globální data `sriSiteJs` v configu, počítá se
+  z minifikovaného výstupu → nikdy nezastará; v dev se atribut nevkládá, JS je nezminifikovaný).
+  Z Bootstrapu se bere jen **Reboot** (`bootstrap-reboot.min.css` — reset: box-sizing,
+  dědění fontu u tlačítek…), ne celý framework (grid/utility/komponenty nepoužíváme, vlastní
+  CSS nestojí na `--bs-*`). Bootstrap **JS** se nenačítá vůbec — podmenu v panelu obsluhuje
+  vlastní náhrada Collapse v `src/js/site.js`; její pár řádků CSS (`.collapse/.collapsing/.show`)
+  je v `src/css/site.css`.
 - Lidsky psaná příručka pro autora je `HELP.md`.
 - Sesterská složka `../ritrik-bootstrap5/` = původní jednostránkový web povýšený na
   Bootstrap 5.3 (bez buildu). `../ritrik.github.io/` = původní živý web (needitovat).
