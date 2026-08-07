@@ -16,12 +16,14 @@
 
     <!--
       Den/noc bez probliknutí: data-bs-theme nastavíme na <html> ještě před vykreslením.
-      Uloženou volbu bereme z localStorage, jinak podle systému; výchozí je tmavý režim.
+      Přednost má vlastní volba z localStorage; jinak se řídíme nastavením prohlížeče.
+      Ptáme se na "dark" (ne na "light"), takže když systém žádnou preferenci nehlásí,
+      vyjde světlý režim — to je i výchozí stav CSS.
     -->
     <script>
       (function () {
         var saved = localStorage.getItem("theme");
-        var theme = saved || (window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark");
+        var theme = saved || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
         document.documentElement.setAttribute("data-bs-theme", theme);
       })();
     </script>
@@ -56,8 +58,8 @@
     <!-- Barevná paleta (vyber v src/_data/site.yaml → palette; soubory v css/palettes/) -->
     <link href="/css/palettes/{{ site.palette or 'rez-a-orech' }}.css" rel="stylesheet" />
 
-    <!-- Téma zvýraznění kódu (vyber v src/_data/site.yaml → codeTheme; soubory v css/code-themes/) -->
-    <link href="/css/code-themes/{{ site.codeTheme or 'vsdark' }}.css" rel="stylesheet" />
+    {# Zvýraznění kódu už nemá vlastní CSS — barvy vypisuje Shiki při buildu
+       přímo do HTML (motiv se vybírá v site.yaml → codeTheme/codeThemeLight). #}
   </head>
 
   <body>

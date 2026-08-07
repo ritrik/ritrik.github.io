@@ -5,13 +5,13 @@
 # `spec` musí být v uvozovkách (obsahuje : a @).
 
 google:
-  - name: Outfit
-    spec: "Outfit:wght@400;500;600;700"
-  - name: Source Sans 3
-    spec: "Source+Sans+3:ital,wght@0,400;0,700;1,400"
-  - name: Cascadia Code
-    spec: "Cascadia+Code:ital,wght@0,200..700;1,200..700"
+  - name: Manrope
+    spec: "Manrope:wght@400;500;600;700"
+  - name: Inter
+    spec: "Inter:ital,wght@0,400;0,600;0,700;1,400"
+  - name: JetBrains Mono
+    spec: "JetBrains+Mono:ital,wght@0,400;0,700;1,400"
 
-headings: '"Outfit", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif'
-text: '"Source Sans 3", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif'
-mono: '"Cascadia Code", SFMono-Regular, "SF Mono", Menlo, Consolas, ui-monospace, monospace'
+headings: '"Manrope", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif'
+text: '"Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif'
+mono: '"JetBrains Mono", SFMono-Regular, "SF Mono", Menlo, Consolas, ui-monospace, monospace'

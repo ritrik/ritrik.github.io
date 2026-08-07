@@ -1,0 +1,39 @@
+/* Paleta „Kámen" — teplá kamenná neutrála s jantarovým akcentem.
+   Struktura je stejná jako u ostatních palet:
+     :root                    → panel + callouty (stejné v obou motivech)
+     [data-bs-theme="dark"]   → plochy obsahu v tmavém režimu
+     [data-bs-theme="light"]  → plochy obsahu ve světlém režimu
+   Panel zůstává tmavý v obou režimech (proto --side-* v :root). */
+
+:root {
+  /* Boční panel */
+  --side-bg: #16130f;
+  --side-ink: #ece7df;
+  --side-soft: #a1968a;
+  --side-accent: #e0a366;
+
+  /* Callouty (:::note / :::tip / :::warning) laděné k teplé paletě */
+  --callout-note: #6a86a0;
+  --callout-tip: #74945f;
+  --callout-warning: #c9793f;
+}
+
+[data-bs-theme="dark"] {
+  --ground: #100e0b;
+  --content-bg: #191612;
+  --content-ink: #ece7df;
+  --content-soft: #a1968a;
+  --rule: rgba(240, 230, 215, 0.09);
+  --accent: #e0a366;
+}
+
+[data-bs-theme="light"] {
+  --ground: #efebe4;
+  /* Teple laděná bílá, ne čistá — obsah tu vyplňuje celou plochu,
+     takže by čistá #fff na velké ploše svítila. */
+  --content-bg: #fbf9f5;
+  --content-ink: #1c1813;
+  --content-soft: #6b6156;
+  --rule: rgba(50, 38, 25, 0.12);
+  --accent: #a9662a;
+}

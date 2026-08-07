@@ -19,6 +19,18 @@
       render();
     });
     render();
+
+    // Když si návštěvník sám nic nezvolil, sledujeme nastavení systému i za běhu
+    // (např. automatické přepnutí na noc). Jakmile klikne na přepínač, uloží se
+    // volba do localStorage a tenhle posluchač ji už nepřebije.
+    var mq = window.matchMedia("(prefers-color-scheme: dark)");
+    var follow = function (e) {
+      if (localStorage.getItem("theme")) return;
+      root.setAttribute("data-bs-theme", e.matches ? "dark" : "light");
+      render();
+    };
+    if (mq.addEventListener) mq.addEventListener("change", follow);
+    else if (mq.addListener) mq.addListener(follow); // starší Safari
   }
 
   var y = document.getElementById("year");
@@ -74,6 +86,17 @@
   document.querySelectorAll(".content pre").forEach(function (pre) {
     var code = pre.querySelector("code");
     if (!code) return;
+
+    // Blok se obalí <div class="code-block">. Tlačítko pak visí na tom obalu,
+    // ne na <pre>: <pre> je posuvné do stran (overflow-x), takže tlačítko uvnitř
+    // něj by při vodorovném rolování ujíždělo pryč i s kódem.
+    // Vedlejší efekt zdarma: tlačítko už není uvnitř <pre>, takže se nechytá
+    // do výběru textu, když si někdo označí celý blok.
+    var wrap = document.createElement("div");
+    wrap.className = "code-block";
+    pre.parentNode.insertBefore(wrap, pre);
+    wrap.appendChild(pre);
+
     var copyBtn = document.createElement("button");
     copyBtn.type = "button";
     copyBtn.className = "code-copy";
@@ -96,7 +119,7 @@
         navigator.clipboard.writeText(text).then(function () { done(true); }, function () { done(false); });
       } else { done(false); }
     });
-    pre.appendChild(copyBtn);
+    wrap.appendChild(copyBtn);
   });
 
   // Rozbalovací podmenu v panelu — vlastní náhrada Bootstrap Collapse (jediné, co se

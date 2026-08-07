@@ -7,11 +7,15 @@ lang: cs-CZ
 url: https://ryutaro.cz
 
 # Barevná paleta webu — soubor z src/css/palettes/ (bez přípony).
-# Možnosti: rez-a-orech · espresso-a-med · indigo · mlzna-modra
-palette: mlzna-modra
+# Možnosti: rez-a-orech · espresso-a-med · indigo · mlzna-modra · kamen
+palette: kamen
 
-# Téma zvýraznění kódu — soubor z src/css/code-themes/ (bez přípony)
-codeTheme: vsdark
+# Téma zvýraznění kódu — název motivu ze Shiki (65 vestavěných, viz shiki.style/themes).
+# Bloky kódu se přepínají spolu se zbytkem webu, proto tu jsou dva.
+# Např.: dracula · monokai · nord · one-dark-pro · night-owl ·
+#        material-theme-palenight · dark-plus · gruvbox-dark-medium
+codeTheme: gruvbox-dark-medium
+codeThemeLight: gruvbox-light-medium
 
 # Menu v bočním panelu.
 #  - běžná položka:        { text, url }
@@ -27,6 +31,9 @@ nav:
     children:
       - text: Timer
         url: /apps/timer/
+        newTab: true
+      - text: Timer 2
+        url: /apps/timer2/
         newTab: true
 #  - url: /feed.xml
 #    icon: rss-fill

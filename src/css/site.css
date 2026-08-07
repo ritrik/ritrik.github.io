@@ -21,6 +21,12 @@
   --maxw-content: 38rem;
   --sidebar-w: 18rem;
   --topbar-h: 3.4rem; /* výška mobilní lišty s burger tlačítkem */
+
+  /* Šířka celé „desky" (panel + obsah dohromady) na širokých displejích.
+     Když je okno užší, --shell-gutter se sám smrskne na nulu a rozvržení
+     se vrátí k levému okraji — proto tu není potřeba další breakpoint. */
+  --shell-max: 1180px;
+  --shell-gutter: max(0px, (100vw - var(--shell-max)) / 2);
 }
 
 /* Barvy obsahu (--ground, --content-bg, --content-ink, --content-soft, --rule, --accent)
@@ -29,7 +35,10 @@
 
 /* ---- Tmavý režim (výchozí) ---- */
 [data-bs-theme="dark"] {
-  --cover-scrim: rgba(8, 14, 14, 0.50);
+  /* Noční fotka na úvodu je tmavá sama o sobě (změřeno: pruh pod panelem
+     má jas ~48 proti ~95 u denní), takže tmavicí overlay už není potřeba.
+     Vinětace u krajů zůstává. */
+  --cover-scrim: transparent;
   --cover-vignette: rgba(0, 0, 0, 0.5);
   --cover-ink: #f1f4f3;
   --cover-shadow: 0 0.05rem 0.25rem rgba(0, 0, 0, 0.55);
@@ -86,14 +95,14 @@ body {
 .sidebar-logo {
   width: 84px;
   height: 84px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 1px solid var(--side-rule);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
+  /* Logo se nechává ve své vlastní čtvercové podobě — žádné kolečko,
+     žádný rámeček. `contain` kvůli tomu, aby se neořízlo. */
+  object-fit: contain;
 }
 .sidebar-brand {
   font-family: var(--font-brand);
-  font-weight: 400;
+  font-weight: 600;
+  letter-spacing: -0.025em;
   font-size: 1.95rem;
   line-height: 1.1;
   margin: 0.6rem 0 0;
@@ -286,7 +295,8 @@ body {
 
 .content h1 {
   font-family: var(--font-headings);
-  font-weight: 400;
+  font-weight: 600;
+  letter-spacing: -0.025em;
   line-height: 1.15;
   font-size: 2.1rem;
   margin: 0 0 0.3rem;
@@ -310,14 +320,16 @@ body {
    ========================================================================= */
 .content h2 {
   font-family: var(--font-headings);
-  font-weight: 400;
+  font-weight: 600;
+  letter-spacing: -0.02em;
   font-size: 1.6rem;
   line-height: 1.2;
   margin: 2.2rem 0 0.6rem;
 }
 .content h3 {
   font-family: var(--font-headings);
-  font-weight: 400;
+  font-weight: 600;
+  letter-spacing: -0.02em;
   font-size: 1.3rem;
   margin: 1.8rem 0 0.5rem;
 }
@@ -688,9 +700,10 @@ a.post-tag:hover {
 
 /* =========================================================================
    Bloky kódu a zvýraznění syntaxe
-   Markup počítá plugin @11ty/eleventy-plugin-syntaxhighlight (Prism) při buildu;
-   tady jsou jen barvy. Tokeny používají proměnné --tok-*, takže fungují v obou
-   režimech (den/noc).
+   Obarvení počítá Shiki při buildu (viz eleventy.config.js) a zapisuje ho
+   rovnou do stylu jednotlivých tokenů — na klienta nejde žádný JavaScript
+   a nejsou potřeba žádné soubory s tématy. Motiv se vybírá v site.yaml
+   (codeTheme / codeThemeLight); bloky se přepínají spolu se zbytkem webu.
    ========================================================================= */
 .content pre,
 .content code {
@@ -706,17 +719,27 @@ a.post-tag:hover {
   border-radius: 0.25rem;
 }
 
-/* Blok kódu (```jazyk … ```) — barvy podle zvoleného tématu */
-.content pre {
+/* Blok kódu (```jazyk … ```).
+   Barvy vypisuje Shiki přímo do stylu jednotlivých tokenů podle motivu
+   ze site.yaml — tady se řeší jen rámeček, odsazení a čísla řádků. */
+/* Obal kolem <pre> (doplňuje ho site.js). Drží tlačítko Kopírovat na místě —
+   samotné <pre> se posouvá do stran, takže cokoli uvnitř něj by při rolování
+   ujelo s kódem. Obal se neposouvá, proto je ukotvení tady. */
+.content .code-block {
   position: relative;
-  background: var(--code-bg);
-  color: var(--code-ink);
-  border: 1px solid var(--code-border);
+  margin: 0 0 1.4rem;
+}
+.content pre {
+  border: 1px solid var(--rule);
   border-radius: 0.5rem;
   padding: 1rem 1.1rem;
   margin: 0 0 1.4rem;
   overflow-x: auto;
   line-height: 1.55;
+}
+/* Uvnitř obalu si odsazení řídí obal (jinak by se sečetla dvakrát) */
+.content .code-block pre {
+  margin-bottom: 0;
 }
 /* Uvnitř bloku už vsazený styl code neplatí */
 .content pre code {
@@ -726,56 +749,33 @@ a.post-tag:hover {
   color: inherit;
 }
 
-/* Prism tokeny (standardní mapování barev na proměnné --tok-*) */
-.token.comment,
-.token.prolog,
-.token.doctype,
-.token.cdata { color: var(--tok-comment); font-style: italic; }
-.token.punctuation { color: var(--tok-punct); }
-.token.property,
-.token.tag,
-.token.boolean,
-.token.constant,
-.token.symbol,
-.token.deleted { color: var(--tok-tag); }
-.token.number { color: var(--tok-number); }
-.token.selector,
-.token.attr-name,
-.token.string,
-.token.char,
-.token.builtin,
-.token.inserted { color: var(--tok-string); }
-.token.operator,
-.token.entity,
-.token.url,
-.language-css .token.string,
-.style .token.string { color: var(--tok-punct); }
-.token.atrule,
-.token.attr-value,
-.token.keyword { color: var(--tok-keyword); }
-.token.function { color: var(--tok-function); }
-.token.class-name { color: var(--tok-class); }
-.token.regex,
-.token.important,
-.token.variable { color: var(--tok-number); }
-.token.important,
-.token.bold { font-weight: 700; }
-.token.italic { font-style: italic; }
+/* Tmavý režim: Shiki vypíše světlé barvy inline a tmavé schová do proměnných
+   --shiki-dark*. Tenhle přepínač je aktivuje. !important je vyžadovaný —
+   přebíjí inline styly, jinak by se motiv nepřepnul (viz dokumentace Shiki). */
+[data-bs-theme="dark"] .shiki,
+[data-bs-theme="dark"] .shiki span {
+  color: var(--shiki-dark) !important;
+  background-color: var(--shiki-dark-bg) !important;
+  font-style: var(--shiki-dark-font-style) !important;
+  font-weight: var(--shiki-dark-font-weight) !important;
+  text-decoration: var(--shiki-dark-text-decoration) !important;
+}
 
-/* Čísla řádků — plugin zabalí každý řádek do .highlight-line (alwaysWrapLineHighlights) */
+/* Čísla řádků — Shiki balí každý řádek do <span class="line"> */
 .content pre code { counter-reset: code-line; }
-.content pre .highlight-line::before {
+.content pre .line::before {
   counter-increment: code-line;
   content: counter(code-line);
   display: inline-block;
   width: 2.5em;
   margin-right: 1em;
   text-align: right;
-  color: var(--code-ln);
-  opacity: 0.7;
+  opacity: 0.4;
   user-select: none;
   -webkit-user-select: none;
 }
+/* Shiki umí na konci nechat prázdný řádek — ten by jinak dostal číslo navíc */
+.content pre .line:last-child:empty { display: none; }
 
 /* Tlačítko Kopírovat — plovoucí vpravo nahoře, průhledné dokud nenajedeš myší.
    Je odsazené nad textem (position: absolute), takže nic neposouvá. */
@@ -791,16 +791,18 @@ a.post-tag:hover {
   background: none;
   border: 0;
   padding: 0.15rem;
-  color: var(--code-ink);
+  /* Dědí barvu textu stránky — blok kódu se teď přepíná spolu s motivem,
+     takže kontrast sedí v denním i nočním režimu. */
+  color: inherit;
   font-size: 1rem;
   line-height: 1;
   cursor: pointer;
 }
-.content pre:hover .code-copy,
+.code-block:hover .code-copy,
 .code-copy:focus-visible {
   opacity: 0.65;
 }
-.content pre:hover .code-copy:hover,
+.code-block:hover .code-copy:hover,
 .code-copy:focus-visible {
   opacity: 1;
 }
@@ -816,6 +818,29 @@ a.post-tag:hover {
 /* =========================================================================
    Úvodní stránka (cover) — fotka lesa s textem uprostřed
    ========================================================================= */
+/* Fotka je na <body>, ne na .content--cover — díky tomu jde přes celou šířku
+   okna a prosvítá i skrz boční panel (ten je na úvodní stránce průsvitný, viz níže).
+   Stránku poznáme podle :has(), stejně jako u task-listů níž v souboru. */
+body:has(.content--cover) {
+  /* Adresa fotky se drží v --cover-photo (nastavuje se níž podle režimu
+     a šířky okna), aby se breakpointy nemusely psát pro den i noc zvlášť.
+     Fallback je denní 1920 pro případ, že by na <html> chybělo data-bs-theme. */
+  background-image: var(--cover-photo, url(/img/background_1920.jpg));
+  background-repeat: no-repeat;
+  background-position: center top;
+  background-size: cover;
+  background-attachment: fixed;
+}
+/* Clona + vinětace přes celé okno, ne jen přes sloupec s textem */
+body:has(.content--cover)::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: var(--cover-scrim);
+  box-shadow: inset 0 0 7rem var(--cover-vignette);
+  pointer-events: none;
+}
+
 .content--cover {
   padding: 0;
   display: flex;
@@ -824,19 +849,8 @@ a.post-tag:hover {
   text-align: center;
   position: relative;
   color: var(--cover-ink);
-  background-image: url(/img/background_1920.jpg);
-  background-repeat: no-repeat;
-  background-position: center top;
-  background-size: cover;
-  background-attachment: fixed;
-  box-shadow: inset 0 0 7rem var(--cover-vignette);
-}
-.content--cover::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: var(--cover-scrim);
-  pointer-events: none;
+  /* Průhledné, aby nezakrylo fotku na <body> */
+  background-color: transparent;
 }
 .content--cover .content-inner {
   position: relative;
@@ -846,7 +860,10 @@ a.post-tag:hover {
 }
 .cover-heading {
   font-family: var(--font-headings);
-  font-weight: 400;
+  /* Schválně lehčí než ostatní nadpisy — v téhle velikosti by 600
+     byla ta věta hlasitá, a hlasitá být nemá. */
+  font-weight: 500;
+  letter-spacing: -0.025em;
   font-size: clamp(2.4rem, 6.5vw, 4.2rem);
   line-height: 1.05;
   margin: 0;
@@ -861,21 +878,128 @@ a.post-tag:hover {
   text-shadow: var(--cover-shadow);
 }
 
-/* Responzivní fotky pozadí (stejné breakpointy jako původní web) */
+/* Responzivní fotky pozadí (stejné breakpointy jako původní web).
+   Vlevo denní varianta pro světlý režim, vpravo noční pro tmavý.
+   Prohlížeč stáhne jen tu jedinou fotku, která se opravdu použije —
+   nepoužité hodnoty proměnných se nestahují. */
+[data-bs-theme="light"] { --cover-photo: url(/img/background_1920.jpg); }
+[data-bs-theme="dark"]  { --cover-photo: url(/img/background_night_1920.jpg); }
+
 @media (max-width: 575.98px) {
-  .content--cover { background-image: url(/img/background_480.jpg); }
+  [data-bs-theme="light"] { --cover-photo: url(/img/background_480.jpg); }
+  [data-bs-theme="dark"]  { --cover-photo: url(/img/background_night_480.jpg); }
 }
 @media (min-width: 576px) and (max-width: 767.98px) {
-  .content--cover { background-image: url(/img/background_576.jpg); }
+  [data-bs-theme="light"] { --cover-photo: url(/img/background_576.jpg); }
+  [data-bs-theme="dark"]  { --cover-photo: url(/img/background_night_576.jpg); }
 }
 @media (min-width: 768px) and (max-width: 991.98px) {
-  .content--cover { background-image: url(/img/background_768.jpg); }
+  [data-bs-theme="light"] { --cover-photo: url(/img/background_768.jpg); }
+  [data-bs-theme="dark"]  { --cover-photo: url(/img/background_night_768.jpg); }
+}
+/* 992–1199.98px dřív žádné pravidlo nepokrývalo a stahovala se sem
+   zbytečně fotka 1920 — teď má vlastní rozsah. */
+@media (min-width: 992px) and (max-width: 1199.98px) {
+  [data-bs-theme="light"] { --cover-photo: url(/img/background_1200.jpg); }
+  [data-bs-theme="dark"]  { --cover-photo: url(/img/background_night_1200.jpg); }
 }
 @media (min-width: 1200px) and (max-width: 1919.98px) {
-  .content--cover { background-image: url(/img/background_1200.jpg); }
+  [data-bs-theme="light"] { --cover-photo: url(/img/background_1200.jpg); }
+  [data-bs-theme="dark"]  { --cover-photo: url(/img/background_night_1200.jpg); }
 }
 @media (min-width: 1920px) {
-  .content--cover { background-image: url(/img/background_1920.jpg); }
+  [data-bs-theme="light"] { --cover-photo: url(/img/background_1920.jpg); }
+  [data-bs-theme="dark"]  { --cover-photo: url(/img/background_night_1920.jpg); }
+}
+
+/* =========================================================================
+   Fotka po stranách desky (jen vnitřní stránky, jen široké obrazovky)
+   -------------------------------------------------------------------------
+   Používá se schválně STEJNÁ proměnná --cover-photo jako na úvodní stránce.
+   Stejná adresa = stejná položka v cache prohlížeče, takže pro každého, kdo
+   přišel přes úvodní stránku, je to nula bajtů navíc.
+
+   Proč `position: fixed` na vrstvě a ne `background-attachment: fixed`:
+   vnitřní stránky se rolují a fixní pozadí nutí prohlížeč překreslovat plochu
+   při každém snímku (typický zdroj trhaného rolování). Fixní element si
+   naopak drží vlastní kompozitní vrstvu a při rolování se nepřekresluje.
+
+   Pod 1200px se pravidlo neuplatní, takže se na mobilu a tabletu fotka
+   vůbec nestahuje. Na úvodní stránce se vynechá — tam fotka kryje celé okno.
+   ========================================================================= */
+@media (min-width: 1200px) {
+  body:not(:has(.content--cover))::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -1; /* nad barvou pozadí, pod obsahem i panelem */
+    /* Ztmavení: 0 = fotka naplno, 0.5 = poloviční. Ladí se tady, jedním číslem. */
+    --gutter-dim: 0;
+    background-image:
+      linear-gradient(rgba(0, 0, 0, var(--gutter-dim)), rgba(0, 0, 0, var(--gutter-dim))),
+      var(--cover-photo, url(/img/background_1920.jpg));
+    background-repeat: no-repeat;
+    background-position: center top;
+    background-size: cover;
+    /* Stejná vinětace jako na úvodní stránce, ať okraje působí všude stejně
+       (v noci ztmavení, ve dne bílý opar — proto ten „mlžný" dojem). */
+    box-shadow: inset 0 0 7rem var(--cover-vignette);
+    pointer-events: none;
+  }
+}
+
+/* Průsvitný panel nad fotkou — jen na úvodní stránce.
+   Průsvitné je jen pozadí, ne text: nadpis, ikony a odkazy zůstávají
+   plně kryté, aby se daly číst bez ohledu na to, co je na fotce za nimi.
+   `hover: hover` = dotyková zařízení (tablet 768px+) dostanou panel plný,
+   protože by na něj neměla jak najet myší. */
+@media (hover: hover) and (min-width: 48em) {
+  body:has(.content--cover) .sidebar {
+    /* --- Tři nezávislé ovladače útlumu panelu na úvodní stránce ---
+       Jsou schválně oddělené: `opacity` by ztlumila i všechny potomky,
+       kdežto alfa v background-color a border-color se dá řídit zvlášť.
+
+       --cover-idle    průhlednost obsahu (logo, text, ikony). Pod ~0.4
+                       nedoporučuju — menu je jediná cesta dál z úvodní stránky.
+       --cover-bg      kolik zbude z barvy pozadí panelu (0% = úplně průhledné)
+       --cover-border  totéž pro vlasové linky po stranách */
+    --cover-idle: 0.55;
+    --cover-bg: 18%;
+    --cover-border: 14%;
+
+    background-color: color-mix(in srgb, var(--side-bg) var(--cover-bg), transparent);
+    border-color: color-mix(in srgb, var(--side-ink) var(--cover-border), transparent);
+    transition: background-color 0.25s ease, border-color 0.25s ease;
+  }
+  /* Ztlumí se celý obsah panelu — přepínač, logo, název, menu i patička.
+     `> *` míří na přímé potomky, takže pozadí panelu (průsvitné výš)
+     zůstane nedotčené a nesčítá se s průhledností textu. */
+  body:has(.content--cover) .sidebar > * {
+    opacity: var(--cover-idle);
+    transition: opacity 0.25s ease, color 0.25s ease;
+  }
+  /* V utlumeném stavu je všechen text jednou barvou, ať panel působí
+     jako jeden plochý „duch" a ne jako pestrá směs. Po najetí myší se
+     vrátí normální odstíny z palety (název světlý, menu tlumené,
+     aktivní položka akcentová). */
+  body:has(.content--cover) .sidebar:not(:hover):not(:focus-within),
+  body:has(.content--cover) .sidebar:not(:hover):not(:focus-within) * {
+    color: var(--side-ink);
+    /* Když je pozadí panelu takhle průsvitné, text leží prakticky přímo
+       na fotce — stín ho udrží čitelný i nad světlým místem v koruně stromu.
+       Stejná proměnná, jakou používá nadpis na úvodní stránce. */
+    text-shadow: var(--cover-shadow);
+  }
+
+  body:has(.content--cover) .sidebar:hover,
+  body:has(.content--cover) .sidebar:focus-within {
+    background-color: var(--side-bg);
+    border-color: var(--side-rule);
+  }
+  body:has(.content--cover) .sidebar:hover > *,
+  body:has(.content--cover) .sidebar:focus-within > * {
+    opacity: 1;
+  }
 }
 
 /* =========================================================================
@@ -885,26 +1009,45 @@ a.post-tag:hover {
   .sidebar {
     position: fixed;
     top: 0;
-    left: 0;
+    /* Panel se odsune od kraje tak, aby celá deska seděla na střed */
+    left: var(--shell-gutter);
     bottom: 0;
     width: var(--sidebar-w);
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
     overflow-y: auto;
+    /* Vlasové linky po obou stranách — vidět jsou až ve chvíli,
+       kdy kolem desky vznikne prostor */
+    border-left: 1px solid var(--side-rule);
+    border-right: 1px solid var(--side-rule);
+    /* Nad clonou přes fotku na úvodní stránce */
+    z-index: 1;
   }
   .content {
-    margin-left: var(--sidebar-w);
+    margin-left: calc(var(--shell-gutter) + var(--sidebar-w));
+    margin-right: var(--shell-gutter);
     padding: 4.5rem 3rem 4rem 4rem;
   }
   .content--cover {
-    margin-left: var(--sidebar-w);
+    margin-left: calc(var(--shell-gutter) + var(--sidebar-w));
+    margin-right: var(--shell-gutter);
     padding: 0;
   }
   /* Patička klesne na spodek panelu */
   .sidebar-footer {
     margin-top: auto;
     padding-top: 1.6rem;
+  }
+}
+
+/* Úvodní stránka: text se centruje na střed obrazovky, ne na střed sloupce.
+   Panel je fixní (mimo tok), takže do centrování nezasahuje — jen leží přes fotku.
+   Až od 1200px: na užším okně by se text dostal částečně pod panel. */
+@media (min-width: 1200px) {
+  .content--cover {
+    margin-left: 0;
+    margin-right: 0;
   }
 }
 
@@ -944,9 +1087,7 @@ a.post-tag:hover {
 .topbar-logo {
   width: 1.85rem;
   height: 1.85rem;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 1px solid var(--side-rule);
+  object-fit: contain;
 }
 
 /* Burger tlačítko (tři čárky → křížek) */
@@ -1035,6 +1176,9 @@ a.post-tag:hover {
     z-index: 1020;
     overflow-y: auto;
     box-shadow: 2px 0 24px rgba(0, 0, 0, 0.4);
+    /* V zásuvce nemají linky co dělat — panel má vlastní stín */
+    border-left: 0;
+    border-right: 0;
   }
   .nav-open .sidebar {
     transform: translateX(0);
