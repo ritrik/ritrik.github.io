@@ -1,0 +1,101 @@
+/* Časovač 2 — screensaver s odpočtem do konce směny.
+   Černé pozadí, červený monospace (jako původní verze), bez závislostí. */
+
+* { margin: 0; box-sizing: border-box; }
+
+html, body { height: 100%; }
+
+body {
+  min-height: 100vh;
+  min-height: 100dvh; /* mobil: počítá se skutečná výška bez adresního řádku */
+  display: flex;
+  flex-direction: column;
+  background: #000;
+  color: #e0183c; /* stejná červená jako v původní verzi */
+  font-family: "Share Tech Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  user-select: none;
+  -webkit-user-select: none;
+  overflow: hidden;
+}
+
+/* Skrytí kurzoru po chvíli nečinnosti (screensaver) — třídu přepíná JS */
+body.idle { cursor: none; }
+
+#screen {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4em;
+  text-align: center;
+  padding: 1rem;
+}
+
+#countdown {
+  /* Střídmější velikost blíž původní verzi (dřív bylo až 13rem) */
+  font-size: clamp(2.5rem, 12vw, 7.5rem);
+  line-height: 1;
+  letter-spacing: 0.02em;
+  font-variant-numeric: tabular-nums; /* číslice neposkakují */
+}
+
+/* Cíl odpočtu — tlumenější, ať nekřičí vedle odpočtu */
+#target {
+  color: #8f1526;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: clamp(0.9rem, 3.5vw, 1.6rem);
+}
+
+/* Počasí = ikona (Bootstrap Icons) + teplota */
+#weather {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3em;
+  color: #8f1526;
+  font-size: clamp(1.1rem, 5vw, 2.4rem);
+  letter-spacing: 0.04em;
+}
+#weather .wx { font-size: 1.25em; line-height: 1; } /* ikona o něco větší než teplota */
+#weather:empty { display: none; }
+
+#footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.5rem 0.9rem;
+  font-size: clamp(0.8rem, 3vw, 1.4rem);
+}
+
+#clock {
+  color: #e0183c;
+  font-variant-numeric: tabular-nums;
+  margin-left: auto;
+}
+
+/* Nápověda je jen našeptávač — decentní, na malých displejích schovaná */
+#hint {
+  color: #5c0e1a;
+  font-size: 0.8rem;
+  letter-spacing: 0.04em;
+}
+#hint code { color: #8f1526; }
+@media (max-width: 34rem) {
+  #hint { display: none; }
+}
+
+#bar {
+  width: min(80vw, 30rem);   /* nepřeteče na mobilu, ale nebude ani přehnaně široký */
+  height: 6px;
+  background: #2a0a10;        /* tmavá „dráha" pod pruhem */
+  border-radius: 3px;
+  overflow: hidden;          /* ať fill nevyčnívá přes zaoblené rohy */
+}
+#bar-fill {
+  height: 100%;
+  width: 100%;               /* zatím napevno plný; v kroku 2 ho bude řídit JS */
+  background: #e0183c;        /* stejná červená jako odpočet */
+  transition: width 1s linear; /* plynulé ubývání místo skoků po sekundě */
+}
