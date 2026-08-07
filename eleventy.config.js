@@ -1,6 +1,7 @@
 // Konfigurace Eleventy (v3, ESM).
 // Vstup: src/  →  výstup: _site/
-import syntaxHighlight from "@11ty/eleventy-plugin-syntaxhighlight";
+import { createHighlighter } from "shiki";
+import { fromHighlighter } from "@shikijs/markdown-it/core";
 import { feedPlugin } from "@11ty/eleventy-plugin-rss";
 import { eleventyImageTransformPlugin } from "@11ty/eleventy-img";
 import markdownItAttrs from "markdown-it-attrs";
@@ -33,6 +34,30 @@ const slugify = (s) =>
     .replace(/[̀-ͯ]/g, "") // odstraní diakritická znaménka
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-+|-+$/g, "");
+
+// ---------------------------------------------------------------------------
+// Zvýrazňovač kódu (Shiki). Vytváří se jednou při načtení configu — samotné
+// obarvování je pak synchronní, takže se dá pověsit rovnou na markdown-it.
+//
+// Témata se berou ze site.yaml (codeTheme / codeThemeLight), aby zůstalo jedno
+// místo, kde se nastavují. Config si YAML načte sám — v _data se dostane až
+// později, tady ho ještě k dispozici nemáme.
+//
+// Jazyky se musí načíst dopředu. `fallbackLanguage` je pojistka: bez ní by
+// jazyk, který tu není vyjmenovaný, shodil celý build.
+// ---------------------------------------------------------------------------
+const siteData = yamlLoad(await readFile("src/_data/site.yaml", "utf8"));
+const codeThemes = {
+  light: siteData.codeThemeLight || "gruvbox-light-medium",
+  dark: siteData.codeTheme || "gruvbox-dark-medium",
+};
+const highlighter = await createHighlighter({
+  themes: [codeThemes.light, codeThemes.dark],
+  langs: [
+    "markdown", "javascript", "python", "yaml", "rust",
+    "powershell", "html", "go", "css", "csharp", "bash", "json",
+  ],
+});
 
 export default function (eleventyConfig) {
   // Produkční build (`npm run build`) vs vývoj (`npm run serve`/`--watch`).
@@ -91,6 +116,18 @@ export default function (eleventyConfig) {
     // Samostatný obrázek obalí do <figure>; s titulkem `![alt](src "Popisek")`
     // přidá <figcaption> (alt zůstává pro přístupnost). Není potřeba psát HTML.
     md.use(markdownItImageFigures, { figcaption: true });
+
+    // Zvýraznění syntaxe (```jazyk … ```) — počítá se při buildu, na klienta
+    // nejde žádný JavaScript. Shiki zabalí každý řádek do <span class="line">,
+    // z čehož se v site.css počítají čísla řádků.
+    // Dvě témata naráz: světlé se vypíše inline, tmavé jako proměnná
+    // --shiki-dark, kterou v site.css aktivuje [data-bs-theme="dark"].
+    md.use(
+      fromHighlighter(highlighter, {
+        themes: codeThemes,
+        fallbackLanguage: "text",
+      }),
+    );
   });
 
   // Drafty (rozepsané články): článek s "draft: true" v hlavičce je vidět v dev
@@ -100,16 +137,6 @@ export default function (eleventyConfig) {
     if (data.draft && process.env.ELEVENTY_RUN_MODE === "build") {
       return false;
     }
-  });
-
-  // Zvýraznění syntaxe v blocích kódu (```jazyk … ```).
-  // Obarvení se počítá při buildu (Prism). Barvy řeší zvolené téma v
-  // src/css/code-themes/ (viz site.yaml → codeTheme), čísla řádků a tlačítko
-  // Kopírovat jsou v src/css/site.css + base.njk.
-  // alwaysWrapLineHighlights zabalí KAŽDÝ řádek do <span class="highlight-line">,
-  // což využívají čísla řádků.
-  eleventyConfig.addPlugin(syntaxHighlight, {
-    alwaysWrapLineHighlights: true,
   });
 
   // RSS/Atom kanál blogu → /feed.xml (z kolekce „posts")
@@ -201,7 +228,8 @@ export default function (eleventyConfig) {
   });
 
   // Statické soubory kopírované 1:1 do _site
-  eleventyConfig.addPassthroughCopy("src/feed.xsl");
+  // feed.xsl se už nekopíruje — generuje se ze src/feed.njk (permalink /feed.xsl),
+  // aby si mohl vzít paletu a písma ze site.yaml / fonts.yaml.
   eleventyConfig.addPassthroughCopy("src/img");
   eleventyConfig.addPassthroughCopy("src/apps");
   eleventyConfig.addPassthroughCopy("src/favicon.ico");

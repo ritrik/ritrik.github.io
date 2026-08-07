@@ -63,7 +63,6 @@ Co kde najdeš (vše podstatné je ve složce `src/`):
 | `src/posts/*.md` | Jednotlivé **články** (jeden soubor = jeden článek). |
 | `src/posts/posts.json` | Nastavuje článkům šablonu a adresu `/blog/{nazev}/`. Neměň. |
 | `src/css/site.css` | **Vzhled a barvy.** |
-| `src/css/code-themes/*.css` | **Tmavá témata zvýraznění kódu** (přepínají se v `site.yaml`). |
 | `src/img/` | Logo (`logo.svg`, `logo.png`) a fotky pozadí `background_*.jpg`. |
 | `src/favicon.svg`, `src/favicon.ico` | Ikona webu v záložce prohlížeče. |
 | `src/apps/` | Statické mini-aplikace (kopírují se 1:1), např. `/apps/timer/`. |
@@ -134,7 +133,8 @@ title: Ryutaro.cz
 tagline: Osobní web
 lang: cs-CZ
 url: https://ryutaro.cz
-codeTheme: vsdark
+codeTheme: gruvbox-dark-medium
+codeThemeLight: gruvbox-light-medium
 nav:
   - text: Domů
     url: /
@@ -221,16 +221,27 @@ jen čtou proměnné z palety. Boční panel zůstává tmavý v **obou** režim
 
 ### Téma zvýraznění kódu
 
-Bloky kódu mají vlastní tmavé téma. Přepneš ho **jedním slovem** v `site.yaml`:
+Zvýraznění kódu obstarává **Shiki** — obarvení se spočítá při buildu a zapíše rovnou
+do stránky, takže se do prohlížeče neposílá žádný JavaScript navíc.
+
+Bloky kódu se přepínají **spolu se zbytkem webu**, proto se v `site.yaml` nastavují
+dva motivy:
 
 ```yaml
-codeTheme: vsdark
+codeTheme: gruvbox-dark-medium        # noční režim
+codeThemeLight: gruvbox-light-medium  # denní režim
 ```
 
-Na výběr (soubory v `src/css/code-themes/`): `vsdark`, `monokai`, `gruvbox`, `dracula`,
-`onedark`, `nightowl`, `nord`, `palenight`. Vlastní téma = zkopíruj soubor, uprav barvy,
-nastav `codeTheme` na jeho název. Bloky kódu mají i **čísla řádků** a **tlačítko
-Kopírovat** (ikonka vpravo nahoře po najetí myší).
+Na výběr je **65 vestavěných motivů** (seznam na <https://shiki.style/themes>), mimo jiné
+`dracula`, `monokai`, `nord`, `one-dark-pro`, `night-owl`, `material-theme-palenight`,
+`dark-plus`. Nic se nekopíruje ani neupravuje — stačí přepsat název.
+
+Bloky kódu mají i **čísla řádků** a **tlačítko Kopírovat** (ikonka vpravo nahoře po
+najetí myší).
+
+> Nový jazyk (```` ```kotlin ````) je potřeba doplnit do seznamu `langs`
+> v `eleventy.config.js`. Neznámý jazyk se vypíše jako obyčejný text — build kvůli
+> němu nespadne.
 
 ---
 

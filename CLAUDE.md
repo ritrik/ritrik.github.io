@@ -20,7 +20,10 @@ npm run build   # build do _site/
 
 ## Kde co je
 - `eleventy.config.js` — vstup `src/`, výstup `_site/`. Registruje:
-  - **syntax highlight** (Prism, build-time; `alwaysWrapLineHighlights` kvůli číslům řádků),
+  - **zvýraznění kódu** (Shiki, build-time; highlighter se vytváří jednou nahoře v configu
+    a věší se na markdown-it přes `fromHighlighter` — obarvování je synchronní. Dvě témata
+    naráz (`site.yaml → codeTheme` / `codeThemeLight`), jazyky se vyjmenovávají v `langs`,
+    neznámý jazyk spadne na `fallbackLanguage: "text"`),
   - **RSS/Atom** kanál `@11ty/eleventy-plugin-rss` → `/feed.xml` (z kolekce `posts`;
     XSLT styl `src/feed.xsl` pro zobrazení v prohlížeči přes volbu `stylesheet`),
   - **responzivní obrázky** `@11ty/eleventy-img` (HTML transform: webp + `srcset` + lazy) — jen v produkci,
@@ -55,8 +58,9 @@ npm run build   # build do _site/
   jsou v `fonts.yaml`.
 - `src/css/palettes/*.css` — barevné palety (rez-a-orech, espresso-a-med, indigo, mlzna-modra),
   včetně barev calloutů note/tip/warning (laděné ke každé paletě);
-  aktivní vybírá `site.yaml → palette`. `src/css/code-themes/*.css` — tmavá témata zvýraznění
-  kódu; aktivní vybírá `site.yaml → codeTheme` (výchozí `vsdark`).
+  aktivní vybírá `site.yaml → palette`. Témata zvýraznění kódu **nemají vlastní soubory** —
+  jsou vestavěná v Shiki (65 kusů), vybírají se názvem v `site.yaml → codeTheme`
+  (tmavý režim) a `codeThemeLight` (světlý); bloky kódu se přepínají spolu s webem.
 - `src/js/site.js` — interaktivita webu (den/noc, burger + focus-trap, kopírování kódu, submenu).
 - `src/index.njk` (cover), `src/about.md` (O mně — **Markdown**), `src/blog.njk` (výpis +
   filtr štítků), `src/posts/*.md` (články; `posts/posts.json` → šablona + URL `/blog/{slug}/`).
