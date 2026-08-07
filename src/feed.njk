@@ -1,0 +1,113 @@
+---
+permalink: /feed.xsl
+eleventyExcludeFromCollections: true
+---
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Styl pro zobrazení RSS/Atom kanálu v prohlížeči (odkazuje se z feed.xml přes
+  volbu `stylesheet` v eleventy-plugin-rss). Čtečky XSLT ignorují a čtou holé XML.
+
+  POZOR: tenhle soubor prochází Eleventy (zdroj je src/feed.njk, výstup /feed.xsl).
+  Díky tomu si bere paletu i písma ze stejného zdroje jako zbytek webu — barvy se
+  tu nepíšou natvrdo, takže se nemůžou rozejít se `site.palette` jako dřív.
+  Soubor je XML: `&` se musí psát `&amp;`, jinak se rozbije parsování.
+-->
+<xsl:stylesheet version="1.0"
+  xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+  xmlns:atom="http://www.w3.org/2005/Atom">
+  <xsl:output method="html" encoding="utf-8" indent="yes" doctype-system="about:legacy-compat" />
+
+  <xsl:template match="/atom:feed">
+    <html lang="{{ site.lang }}" data-bs-theme="light">
+      <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title><xsl:value-of select="atom:title" /> — RSS kanál</title>
+
+        <!-- Stejná logika den/noc jako na webu: vlastní volba má přednost,
+             jinak se řídíme prohlížečem. Statické data-bs-theme="light" výš
+             je pojistka, kdyby byl JavaScript vypnutý. -->
+        <script>
+          (function () {
+            var saved = localStorage.getItem("theme");
+            var theme = saved || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+            document.documentElement.setAttribute("data-bs-theme", theme);
+          })();
+        </script>
+
+        <!-- Barvy: přímo aktivní paleta webu. Žádná kopie hodnot. -->
+        <link rel="stylesheet" href="/css/palettes/{{ site.palette }}.css" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?{% for f in fonts.google %}family={{ f.spec }}&amp;{% endfor %}display=swap" />
+
+        <style>
+          /* Písma z fonts.yaml — jediný zdroj, stejně jako v base.njk */
+          :root {
+            --font-headings: {{ fonts.headings | safe }};
+            --font-text: {{ fonts.text | safe }};
+          }
+          * { box-sizing: border-box; }
+          body {
+            margin: 0; padding: 2.5rem 1.2rem 4rem;
+            background: var(--ground); color: var(--content-ink);
+            font-family: var(--font-text);
+            line-height: 1.6; -webkit-font-smoothing: antialiased;
+          }
+          .wrap { max-width: 42rem; margin: 0 auto; }
+          .card {
+            background: var(--content-bg); border: 1px solid var(--rule); border-radius: .6rem;
+            padding: 1.6rem 1.8rem; margin-bottom: 2rem;
+          }
+          .eyebrow { text-transform: uppercase; letter-spacing: .12em; font-size: .72rem; color: var(--accent); margin: 0 0 .5rem; }
+          h1 {
+            font-family: var(--font-headings); font-weight: 600; letter-spacing: -.025em;
+            font-size: 1.9rem; margin: 0 0 .3rem;
+          }
+          .sub { color: var(--content-soft); margin: 0 0 1rem; }
+          .note { font-size: .9rem; color: var(--content-soft); margin: 0; }
+          .note a, a.home { color: var(--accent); }
+          ul { list-style: none; padding: 0; margin: 0; }
+          li { padding: 1.1rem 0; border-bottom: 1px solid var(--rule); }
+          li:last-child { border-bottom: 0; }
+          .title {
+            font-family: var(--font-headings); font-weight: 600; letter-spacing: -.02em;
+            font-size: 1.3rem; color: var(--content-ink); text-decoration: none;
+          }
+          .title:hover { color: var(--accent); }
+          .date { color: var(--content-soft); font-size: .82rem; text-transform: uppercase; letter-spacing: .08em; margin-top: .2rem; }
+          .excerpt { margin: .45rem 0 0; font-size: .93rem; color: var(--content-soft); }
+        </style>
+      </head>
+      <body>
+        <div class="wrap">
+          <div class="card">
+            <p class="eyebrow">RSS / Atom kanál</p>
+            <h1><xsl:value-of select="atom:title" /></h1>
+            <p class="sub"><xsl:value-of select="atom:subtitle" /></p>
+            <p class="note">
+              Tohle je <strong>kanál pro čtečky</strong> — vlož adresu této stránky do své
+              RSS čtečky a budeš dostávat nové články. Nebo se vrať
+              <a class="home"><xsl:attribute name="href"><xsl:value-of select="atom:link[not(@rel='self')]/@href" /></xsl:attribute>na web</a>.
+            </p>
+          </div>
+
+          <ul>
+            <xsl:for-each select="atom:entry">
+              <li>
+                <a class="title">
+                  <xsl:attribute name="href"><xsl:value-of select="atom:link/@href" /></xsl:attribute>
+                  <xsl:value-of select="atom:title" />
+                </a>
+                <div class="date"><xsl:value-of select="substring(atom:updated, 1, 10)" /></div>
+                <xsl:if test="atom:summary">
+                  <p class="excerpt"><xsl:value-of select="atom:summary" /></p>
+                </xsl:if>
+              </li>
+            </xsl:for-each>
+          </ul>
+        </div>
+      </body>
+    </html>
+  </xsl:template>
+</xsl:stylesheet>
