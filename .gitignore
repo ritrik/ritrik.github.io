@@ -4,3 +4,9 @@ _site/
 
 # Lokální (strojově specifické) nastavení Claude Code — necommitovat
 .claude/settings.local.json
+
+# Pracovní soubory k návrhu vzhledu — jen pro porovnání v prohlížeči, ne součást webu
+design-drafts*.html
+
+# Originály fotek, ze kterých se ořezávají pozadí do src/img/ (velké, do repa nepatří)
+pexels-*.jpg
