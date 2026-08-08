@@ -964,17 +964,22 @@ body:has(.content--cover)::before {
        --cover-bg      kolik zbude z barvy pozadí panelu (0% = úplně průhledné)
        --cover-border  totéž pro vlasové linky po stranách */
     --cover-idle: 0.55;
-    --cover-bg: 18%;
+    --cover-bg: 0;/*18%;*/
     --cover-border: 14%;
 
     background-color: color-mix(in srgb, var(--side-bg) var(--cover-bg), transparent);
-    border-color: color-mix(in srgb, var(--side-ink) var(--cover-border), transparent);
+    border-color: transparent;/*color-mix(in srgb, var(--side-ink) var(--cover-border), transparent);*/
     transition: background-color 0.25s ease, border-color 0.25s ease;
+  }
+  /* Mělo by zneviditelnit menu odkazy pokud není hover přes sidebar*/
+  body:has(.content--cover) .sidebar .sidebar-nav {
+    opacity: 0;
+    transition: opacity 0.25s ease, color 0.25s ease;
   }
   /* Ztlumí se celý obsah panelu — přepínač, logo, název, menu i patička.
      `> *` míří na přímé potomky, takže pozadí panelu (průsvitné výš)
      zůstane nedotčené a nesčítá se s průhledností textu. */
-  body:has(.content--cover) .sidebar > * {
+  body:has(.content--cover) .sidebar > :not(.sidebar-nav) {
     opacity: var(--cover-idle);
     transition: opacity 0.25s ease, color 0.25s ease;
   }
@@ -997,7 +1002,9 @@ body:has(.content--cover)::before {
     border-color: var(--side-rule);
   }
   body:has(.content--cover) .sidebar:hover > *,
-  body:has(.content--cover) .sidebar:focus-within > * {
+  body:has(.content--cover) .sidebar:focus-within > *,
+  body:has(.content--cover) .sidebar:hover .sidebar-nav,
+  body:has(.content--cover) .sidebar:focus-within .sidebar-nav {
     opacity: 1;
   }
 }
