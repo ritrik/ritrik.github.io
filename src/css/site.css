@@ -955,33 +955,39 @@ body:has(.content--cover)::before {
    protože by na něj neměla jak najet myší. */
 @media (hover: hover) and (min-width: 48em) {
   body:has(.content--cover) .sidebar {
-    /* --- Tři nezávislé ovladače útlumu panelu na úvodní stránce ---
+    /* --- Čtyři nezávislé ovladače útlumu panelu na úvodní stránce ---
        Jsou schválně oddělené: `opacity` by ztlumila i všechny potomky,
        kdežto alfa v background-color a border-color se dá řídit zvlášť.
 
-       --cover-idle    průhlednost obsahu (logo, text, ikony). Pod ~0.4
-                       nedoporučuju — menu je jediná cesta dál z úvodní stránky.
-       --cover-bg      kolik zbude z barvy pozadí panelu (0% = úplně průhledné)
-       --cover-border  totéž pro vlasové linky po stranách */
+       --cover-idle      průhlednost obsahu (logo, název, patička)
+       --cover-nav-idle  totéž zvlášť pro menu; 0 = schované úplně
+       --cover-bg        kolik zbude z barvy pozadí panelu (0% = průhledné)
+       --cover-border    totéž pro vlasové linky po stranách
+
+       Procenta musí mít „%" — color-mix() bere jen <percentage>. Samotná 0
+       by byla neplatná a pravidlo by spadlo na výchozí hodnotu (shodou
+       okolností taky průhlednou), takže by knoflík tiše přestal fungovat. */
     --cover-idle: 0.55;
-    --cover-bg: 0;/*18%;*/
-    --cover-border: 14%;
+    --cover-nav-idle: 0;
+    --cover-bg: 0%; /*18%;*/
+    --cover-border: 0%; /*14%;*/
 
     background-color: color-mix(in srgb, var(--side-bg) var(--cover-bg), transparent);
-    border-color: transparent;/*color-mix(in srgb, var(--side-ink) var(--cover-border), transparent);*/
+    border-color: color-mix(in srgb, var(--side-ink) var(--cover-border), transparent);
     transition: background-color 0.25s ease, border-color 0.25s ease;
   }
-  /* Mělo by zneviditelnit menu odkazy pokud není hover přes sidebar*/
-  body:has(.content--cover) .sidebar .sidebar-nav {
-    opacity: 0;
-    transition: opacity 0.25s ease, color 0.25s ease;
-  }
-  /* Ztlumí se celý obsah panelu — přepínač, logo, název, menu i patička.
+  /* Ztlumí se celý obsah panelu — přepínač, logo, název i patička.
      `> *` míří na přímé potomky, takže pozadí panelu (průsvitné výš)
      zůstane nedotčené a nesčítá se s průhledností textu. */
-  body:has(.content--cover) .sidebar > :not(.sidebar-nav) {
+  body:has(.content--cover) .sidebar > * {
     opacity: var(--cover-idle);
     transition: opacity 0.25s ease, color 0.25s ease;
+  }
+  /* Menu se řídí vlastním knoflíkem. Leží uvnitř .sidebar-top, takže se jeho
+     průhlednost násobí s --cover-idle (0.55 × 0 = 0) — proto zmizí úplně. */
+  body:has(.content--cover) .sidebar-nav {
+    opacity: var(--cover-nav-idle);
+    transition: opacity 0.25s ease;
   }
   /* V utlumeném stavu je všechen text jednou barvou, ať panel působí
      jako jeden plochý „duch" a ne jako pestrá směs. Po najetí myší se
