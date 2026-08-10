@@ -55,7 +55,7 @@ const highlighter = await createHighlighter({
   themes: [codeThemes.light, codeThemes.dark],
   langs: [
     "markdown", "javascript", "python", "yaml", "rust",
-    "powershell", "html", "go", "css", "csharp", "bash", "json",
+    "powershell", "html", "go", "css", "csharp", "bash", "json", "php",
   ],
 });
 
