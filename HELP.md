@@ -15,9 +15,9 @@ předem vygenerují hotové HTML stránky do složky `_site/`, a ty se nahrají 
 - **Vzhled:** [Bootstrap 5.3](https://getbootstrap.com/) + vlastní styl ve stylu tématu
   **Hyde** — pevný **tmavý boční panel vlevo**, obsah vpravo, **přepínač den/noc**.
   Na mobilu se panel schová do **burger menu**.
-- **Písma:** [Fraunces](https://fonts.google.com/specimen/Fraunces) (nadpisy),
-  [PT Sans](https://fonts.google.com/specimen/PT+Sans) (text),
-  [Cascadia Code](https://fonts.google.com/specimen/Cascadia+Code) (kód) — z Google Fonts.
+- **Písma:** [Manrope](https://fonts.google.com/specimen/Manrope) (nadpisy),
+  [Inter](https://fonts.google.com/specimen/Inter) (text),
+  [JetBrains Mono](https://fonts.google.com/specimen/JetBrains+Mono) (kód) — z Google Fonts.
 - **Ikony:** [Bootstrap Icons](https://icons.getbootstrap.com/) (sociální sítě, tlačítka).
 - **Texty stránek:** Markdown (`.md`) a Nunjucks šablony (`.njk`), s rozšířeným
   Markdownem (callouty, obsah, zvýraznění… viz část 6).
@@ -35,6 +35,7 @@ projektu:
 | `npm run serve` | Spustí dev server na **http://localhost:8080** se živým náhledem. |
 | `npm run build` | Sestaví hotový web do složky `_site/`. |
 | `npm run clean` | Smaže složku `_site/`. |
+| `npm run new -- "Název článku"` | Založí rozepsaný článek v `src/posts/` (s dnešním datem a `draft: true`). |
 
 Při `npm run serve` se každá uložená změna v `src/` hned promítne v prohlížeči.
 
@@ -185,15 +186,15 @@ jednom místě se řídí načtení z Google Fonts i dosazení do CSS:
 
 ```yaml
 google:
-  - name: Outfit
-    spec: "Outfit:wght@400;500;600;700"
-  - name: Source Sans 3
-    spec: "Source+Sans+3:ital,wght@0,400;0,700;1,400"
-  - name: Cascadia Code
-    spec: "Cascadia+Code:ital,wght@0,200..700;1,200..700"
-headings: '"Outfit", -apple-system, sans-serif'   # nadpisy
-text: '"Source Sans 3", -apple-system, sans-serif' # běžný text
-mono: '"Cascadia Code", monospace'                # kód
+  - name: Manrope
+    spec: "Manrope:wght@400;500;600;700"
+  - name: Inter
+    spec: "Inter:ital,wght@0,400;0,600;0,700;1,400"
+  - name: JetBrains Mono
+    spec: "JetBrains+Mono:ital,wght@0,400;0,700;1,400"
+headings: '"Manrope", -apple-system, sans-serif'  # nadpisy
+text: '"Inter", -apple-system, sans-serif'        # běžný text
+mono: '"JetBrains Mono", monospace'               # kód
 ```
 
 Swap písma = uprav `spec` (dotaz [Google Fonts](https://fonts.google.com/); kvůli `:` a `@`
@@ -207,11 +208,11 @@ proměnnými `--font-brand`/`--font-nav` v `site.css`.)
 Barevných **palet** je několik; vybíráš ji jedním slovem v `site.yaml`:
 
 ```yaml
-palette: rez-a-orech
+palette: kamen
 ```
 
-Na výběr (soubory v `src/css/palettes/`): `rez-a-orech`, `espresso-a-med`, `indigo`,
-`mlzna-modra`. Každá paleta drží barvy pro noční i denní režim (CSS proměnné `--ground`,
+Na výběr (soubory v `src/css/palettes/`): `kamen`, `rez-a-orech`, `espresso-a-med`,
+`indigo`, `mlzna-modra`. Každá paleta drží barvy pro noční i denní režim (CSS proměnné `--ground`,
 `--content-*`, `--accent`, `--side-*`) a taky barvy **calloutů** `--callout-note` /
 `--callout-tip` / `--callout-warning` (odstíny note/tip/warning, laděné ke každé paletě).
 Vlastní paleta = zkopíruj soubor, uprav proměnné, nastav `palette` na jeho název.
@@ -326,7 +327,7 @@ je potřeba `pathPrefix` v `eleventy.config.js`.
 - **Ukázkové texty a články** jsou jen výplň — klidně je přepiš nebo smaž.
 - **Každý článek** má nahoře i dole odkaz „← Zpět na blog" — přidává ho šablona
   `post.njk` automaticky, nemusíš ho psát.
-- **Logo a favicon** je písmeno „R" v písmu Fraunces na tmavém pozadí; logo je vektorové
-  (`logo.svg`) s `logo.png` jako zálohou.
+- **Logo a favicon** je písmeno „R" na tmavém pozadí; logo je vektorové (`logo.svg`,
+  písmeno převedené na křivky) s `logo.png` jako zálohou.
 - Soubor `CLAUDE.md` jsou stručné instrukce pro AI asistenta; tahle příručka (`HELP.md`)
   je psaná pro člověka.

@@ -11,11 +11,29 @@ Text na úvodní stránce **„Je tu tichá prázdnota / Možná jednou…"** je
 marketingový jazyk ani veselé ozdoby kolem této věty. Neber ji jako výplň k
 „vylepšení". Zdrojový kód drž čistý a okomentovaný, ať si ho autor může sám upravovat.
 
+## Konvence
+Platí napříč stroji — autor pracuje na projektu z více počítačů, a tenhle soubor je
+jediné, co se mezi nimi synchronizuje (přes git). Co má platit všude, patří sem,
+ne do lokální paměti agenta.
+
+- **Jazyk:** commit messages, komentáře ve zdrojácích, obsah webu i dokumentace jsou
+  **česky**. Nový text piš česky, pokud si autor neřekne jinak.
+- **Dvě dokumentace, obě aktuální:** `CLAUDE.md` je technická mapa pro agenta, `HELP.md`
+  lidsky psaná příručka pro autora. Konfigurační údaje (písma, paleta, npm skripty) jsou
+  opsané v obou → změna v `src/_data/*.yaml`, `src/css/palettes/` nebo v npm skriptech
+  znamená úpravu **tří** souborů: config + `CLAUDE.md` + `HELP.md`. (Obojí se už jednou
+  rozešlo se skutečností — rozešlá dokumentace je horší než žádná.)
+- **Zdroje pravdy pro vzhled:** `src/_data/site.yaml` (paleta, témata Shiki, menu, sociální
+  sítě) a `src/_data/fonts.yaml` (písma). Aktuální hodnoty čti odtud, ne ze šablon,
+  ne ze `site.css` a ne z popisů v dokumentaci.
+
 ## Spuštění
 ```bash
 npm install     # jednou
 npm run serve   # dev server (http://localhost:8080, případně další volný port)
 npm run build   # build do _site/
+npm run clean   # smaže _site/
+npm run new -- "Název článku"   # založí rozepsaný článek v src/posts/ (scripts/new-post.mjs)
 ```
 
 ## Kde co je
@@ -56,7 +74,7 @@ npm run build   # build do _site/
   (vybírá `site.yaml → palette`). Callout pravidla v `site.css` čtou jen tyhle proměnné
   (s fallbackem). **Rodiny písem** (`--font-headings/--font-text/--font-mono`) taky ne —
   jsou v `fonts.yaml`.
-- `src/css/palettes/*.css` — barevné palety (rez-a-orech, espresso-a-med, indigo, mlzna-modra),
+- `src/css/palettes/*.css` — barevné palety (rez-a-orech, espresso-a-med, indigo, mlzna-modra, kamen),
   včetně barev calloutů note/tip/warning (laděné ke každé paletě);
   aktivní vybírá `site.yaml → palette`. Témata zvýraznění kódu **nemají vlastní soubory** —
   jsou vestavěná v Shiki (65 kusů), vybírají se názvem v `site.yaml → codeTheme`
@@ -90,8 +108,9 @@ doménu (`src/CNAME` = `ryutaro.cz`). Pro projektovou stránku
 
 ## Pozn.
 - Z CDN se načítají **Bootstrap Reboot, Bootstrap Icons** (obojí s ručním `integrity`/SRI
-  hashem z jsDelivr) a **Google Fonts** (Outfit + Source Sans 3 + Cascadia Code; bez SRI — ta CSS je
-  generovaná per-request, hash by neseděl). Vlastní `/js/site.js` dostává v **produkci**
+  hashem z jsDelivr) a **Google Fonts** (aktuálně Manrope + Inter + JetBrains Mono, seznam
+  drží `fonts.yaml`; bez SRI — ta CSS je generovaná per-request, hash by neseděl).
+  Vlastní `/js/site.js` dostává v **produkci**
   automaticky generovaný SRI `integrity` (globální data `sriSiteJs` v configu, počítá se
   z minifikovaného výstupu → nikdy nezastará; v dev se atribut nevkládá, JS je nezminifikovaný).
   Z Bootstrapu se bere jen **Reboot** (`bootstrap-reboot.min.css` — reset: box-sizing,
