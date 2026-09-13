@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="cs">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Převodník jednotek</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main class="card">
+    <h1>Převodník jednotek</h1>
+    <p class="note">Počítá se lokálně v prohlížeči, nic se nikam neodesílá.</p>
+
+    <div class="field">
+      <label for="category">Kategorie</label>
+      <select id="category"></select>
+    </div>
+
+    <div class="convert-row" id="convert-row">
+      <div class="convert-col">
+        <input type="number" id="value" value="1" />
+        <select id="from"></select>
+      </div>
+
+      <button type="button" id="swap" title="Prohodit jednotky" aria-label="Prohodit jednotky">⇄</button>
+
+      <div class="convert-col">
+        <output id="result" for="value from to"></output>
+        <select id="to"></select>
+      </div>
+    </div>
+
+    <div class="color-row" id="color-row" hidden>
+      <div class="color-swatches">
+        <input type="color" id="color-picker" value="#3366ff" />
+        <div class="color-preview" id="color-preview" aria-hidden="true"></div>
+      </div>
+      <div class="color-fields">
+        <div class="field">
+          <label for="hex-value">HEX</label>
+          <input type="text" id="hex-value" spellcheck="false" />
+        </div>
+        <div class="field">
+          <label for="rgb-value">RGB</label>
+          <input type="text" id="rgb-value" spellcheck="false" />
+        </div>
+        <div class="field">
+          <label for="hsl-value">HSL</label>
+          <input type="text" id="hsl-value" spellcheck="false" />
+        </div>
+        <div class="field">
+          <div class="alpha-row">
+            <label for="alpha-value">Průhlednost</label>
+            <output for="alpha-value" id="alpha-output">100 %</output>
+          </div>
+          <input type="range" id="alpha-value" min="0" max="100" value="100" />
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>

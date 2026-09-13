@@ -1,0 +1,201 @@
+:root {
+  --bg: #f4f4f5;
+  --card-bg: #ffffff;
+  --text: #1c1c1e;
+  --muted: #6b7280;
+  --border: #d4d4d8;
+  --accent: #2563eb;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #18181b;
+    --card-bg: #232326;
+    --text: #f4f4f5;
+    --muted: #9ca3af;
+    --border: #3f3f46;
+    --accent: #3b82f6;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 2rem 1rem;
+  background: var(--bg);
+  color: var(--text);
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+
+.card {
+  width: 100%;
+  max-width: 32rem;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+}
+
+h1 {
+  margin: 0 0 0.4rem;
+  font-size: 1.25rem;
+}
+
+.note {
+  margin: 0 0 1.25rem;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.field {
+  margin-bottom: 1.25rem;
+}
+
+.field label {
+  display: block;
+  font-size: 0.9rem;
+  margin-bottom: 0.4rem;
+}
+
+select,
+input[type="number"],
+input[type="text"] {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid var(--border);
+  border-radius: 0.4rem;
+  background: var(--card-bg);
+  color: var(--text);
+  font: inherit;
+}
+
+.convert-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+/* display: flex by class by default beats the browser's [hidden] default —
+   an explicit override is needed to actually hide these when toggled by JS. */
+.convert-row[hidden],
+.color-row[hidden] {
+  display: none;
+}
+
+.convert-col {
+  flex: 1 1 10rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+#result {
+  display: block;
+  padding: 0.5rem;
+  border: 1px solid var(--border);
+  border-radius: 0.4rem;
+  background: var(--bg);
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+  min-height: 1.2rem;
+  overflow-wrap: anywhere;
+}
+
+button#swap {
+  flex: 0 0 auto;
+  width: 2.5rem;
+  height: 2.5rem;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  background: var(--card-bg);
+  color: var(--accent);
+  font-size: 1.1rem;
+  cursor: pointer;
+}
+
+button#swap:hover {
+  filter: brightness(1.05);
+}
+
+.color-row {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+}
+
+.color-swatches {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.color-swatches input[type="color"] {
+  width: 3.5rem;
+  height: 3.5rem;
+  padding: 0.15rem;
+  border: 1px solid var(--border);
+  border-radius: 0.4rem;
+  cursor: pointer;
+}
+
+/* Šachovnice za náhledem, aby byla průhlednost vidět — nativní <input type="color">
+   alfu nezobrazuje ani nepodporuje, proto je náhled samostatný prvek. */
+.color-preview {
+  position: relative;
+  width: 3.5rem;
+  height: 3.5rem;
+  border-radius: 0.4rem;
+  border: 1px solid var(--border);
+  background-image: repeating-conic-gradient(#ccc 0% 25%, #fff 0% 50%);
+  background-size: 12px 12px;
+  overflow: hidden;
+}
+
+.color-preview::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--preview-color, transparent);
+}
+
+.alpha-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.4rem;
+}
+
+.alpha-row output {
+  font-variant-numeric: tabular-nums;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+#alpha-value {
+  width: 100%;
+}
+
+.color-fields {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.color-fields .field {
+  margin-bottom: 0;
+}
+
+.color-fields input[type="text"] {
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+}
