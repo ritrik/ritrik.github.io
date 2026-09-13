@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="cs">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Generátor QR kódů</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main class="card">
+    <h1>Generátor QR kódů</h1>
+    <p class="note">
+      QR kód se vytváří lokálně v prohlížeči. Text se nikam neodesílá.
+    </p>
+
+    <div class="field">
+      <label for="text">Text nebo odkaz</label>
+      <textarea id="text" rows="4" placeholder="https://…"></textarea>
+    </div>
+
+    <div class="field field-row">
+      <label for="ecl">Oprava chyb</label>
+      <select id="ecl">
+        <option value="L">Nízká (L)</option>
+        <option value="M" selected>Střední (M)</option>
+        <option value="Q">Kvalitní (Q)</option>
+        <option value="H">Vysoká (H)</option>
+      </select>
+    </div>
+
+    <div class="field field-row">
+      <label for="size">Velikost</label>
+      <select id="size">
+        <option value="4">Malá</option>
+        <option value="6" selected>Střední</option>
+        <option value="10">Velká</option>
+      </select>
+    </div>
+
+    <div class="field field-row">
+      <label for="style">Tvar bodů</label>
+      <select id="style">
+        <option value="square" selected>Čtverečky</option>
+        <option value="dots">Kolečka</option>
+      </select>
+    </div>
+
+    <div class="field field-row">
+      <label for="fg-color">Barva kódu</label>
+      <input type="color" id="fg-color" value="#000000" />
+    </div>
+
+    <div class="field field-row">
+      <label for="bg-color">Barva pozadí</label>
+      <input type="color" id="bg-color" value="#ffffff" />
+    </div>
+
+    <label class="checkbox-row">
+      <input type="checkbox" id="bg-transparent" />
+      Průhledné pozadí (jen ve staženém souboru)
+    </label>
+
+    <p class="error" id="error" hidden></p>
+
+    <button type="button" id="generate">Vygenerovat</button>
+
+    <div class="output" id="output" hidden>
+      <div class="qr-holder" id="qr-holder"></div>
+      <a id="download" download="qr-kod.svg">Stáhnout SVG</a>
+    </div>
+  </main>
+
+  <script src="qrcode.js"></script>
+  <script src="qrcode_utf8.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
