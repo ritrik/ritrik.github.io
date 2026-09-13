@@ -52,7 +52,8 @@ npm run new -- "Název článku"   # založí rozepsaný článek v src/posts/ (
     (samostatný obrázek → `<figure>`; titulek → `<figcaption>`).
   - **preprocessor `drafts`** — článek s `draft: true` se vyřadí z produkčního buildu
     (`ELEVENTY_RUN_MODE === "build"`), v dev (`serve`) je vidět s odznakem „Koncept".
-  - kolekce `posts` a `tagList`, filtr `datumCZ`, bezdiakritický `slugify` pro kotvy nadpisů,
+  - kolekce `posts`, `poznamky`, `vse` (články + poznámky dohromady, z ní jede kanál)
+    a `tagList`, filtr `datumCZ`, bezdiakritický `slugify` pro kotvy nadpisů,
     transform `strip-eleventy-ignore` (úklid atributu po eleventy-img, vždy).
   - **produkce vs vývoj** (proměnná `isProd = ELEVENTY_RUN_MODE === "build"`, jedna sekce
     v configu): v **produkci** minifikace HTML (`html-minifier-terser`, i inline CSS/JS),
@@ -64,9 +65,13 @@ npm run new -- "Název článku"   # založí rozepsaný článek v src/posts/ (
   `<style>`. Interaktivita (den/noc, burger menu, kopírování kódu, submenu) je v externím
   `src/js/site.js`; inline v `<head>` zůstává jen krátký „no-flash" skript. Logo je `<picture>`
   (SVG + PNG fallback) s `eleventy:ignore`, aby ho eleventy-img nepřepsal. Front-matter
-  `cover: true` zapne fotku lesa na pozadí (úvod).
+  `cover: true` zapne fotku lesa na pozadí (úvod). V `<head>` taky **metadata pro
+  sdílení** — `canonical` + Open Graph/Twitter; adresy se skládají ze `site.url`,
+  náhled se dá u stránky přebít front-matter klíčem `image` (jinak fotka lesa).
 - `src/_includes/post.njk` — šablona článku (odkaz „← Zpět na blog" nahoře i dole,
   titulek, datum, štítky, odznak „Koncept" u draftů).
+- `src/_includes/poznamka.njk` — šablona zápisku. Odlehčený `post.njk`: hlavičkou je
+  **datum, ne nadpis** (klíč `title` se tu vědomě nevykresluje), bez štítků.
 - `src/css/site.css` — veškerý styl. Barvy jsou CSS proměnné pro `[data-bs-theme="dark"]`
   a `[data-bs-theme="light"]` (pozadí teple laděné). Boční panel zůstává tmavý v obou
   režimech. **Barvy palety** (`--ground/--content-*/--accent/--side-*` + barvy calloutů
@@ -80,18 +85,44 @@ npm run new -- "Název článku"   # založí rozepsaný článek v src/posts/ (
   jsou vestavěná v Shiki (65 kusů), vybírají se názvem v `site.yaml → codeTheme`
   (tmavý režim) a `codeThemeLight` (světlý); bloky kódu se přepínají spolu s webem.
 - `src/js/site.js` — interaktivita webu (den/noc, burger + focus-trap, kopírování kódu, submenu).
-- `src/index.njk` (cover), `src/about.md` (O mně — **Markdown**), `src/blog.njk` (výpis +
-  filtr štítků), `src/posts/*.md` (články; `posts/posts.json` → šablona + URL `/blog/{slug}/`).
+- `src/index.njk` (cover), `src/about.md` (O mně — **Markdown**), `src/nyni.md` („Nyní" —
+  čím se autor právě zabývá; datum se bere z front-matter klíče `updated`, nedopočítává se),
+  `src/blog.njk` (výpis + filtr štítků), `src/posts/*.md` (články; `posts/posts.json` →
+  šablona + URL `/blog/{slug}/`), `src/poznamky.njk` (výpis zápisků — ukazuje **celý text**,
+  ne excerpt) a `src/poznamky/*.md` (zápisky; `poznamky/poznamky.json` → šablona + URL
+  `/poznamky/{slug}/`).
+- **`hidden: true`** v hlavičce stránky = hotová, ale nezveřejňovaná: vypadne ze
+  `/sitemap.xml` a dostane `<meta name="robots" content="noindex">`. Takhle jsou na tom
+  `src/about.md` a `src/nyni.md` — **„O mně" a „Nyní" v `nav` schází záměrně.**
+  Nepřidávej je tam a nesundávej `hidden`, dokud autor neřekne.
+  U „Nyní" je důvod jiný než u „O mně": stránka hlásí datum poslední úpravy, takže
+  když zestárne, vypadá web opuštěně — zveřejní se, až bude co psát a chuť to držet
+  aktuální.
+- `src/sitemap.njk` → `/sitemap.xml` (jen stránky s `.html` výstupem, bez 404
+  a bez `hidden`),
+  `src/robots.njk` → `/robots.txt` (odkazuje na sitemapu). Obojí vzorem podle `feed.njk`.
+- `src/_data/eleventyComputed.js` — dopočítaná data: `summary` ← `excerpt` (kvůli kanálu)
+  a `title` pro poznámky bez nadpisu (Atom `<title>` vyžaduje → dosadí se datum).
+  **Pozor:** ten dopočítaný titulek je jen pro `<title>` a kanál — `poznamka.njk` ho
+  vědomě nevykresluje, jinak by každý zápisek dostal nadpis „Poznámka z…".
 - `src/_data/site.yaml` — název, tagline, jazyk, `url`, `palette`, `codeTheme`, `nav`, `social`
   (YAML; zapnuto přes `addDataExtension` + `js-yaml`). `src/_data/fonts.yaml` — písma (`fonts.*`).
 - `src/img/` — logo (`logo.svg` + `logo.png`) a responzivní fotky `background_*.jpg`.
   Favicon: `src/favicon.svg` (+ `favicon.ico` jako záloha) a apple-touch icon.
-- `src/apps/` — statické mini-aplikace (kopírují se 1:1), např. `/apps/timer/`.
+- `src/apps/` — statické mini-aplikace (kopírují se 1:1), např. `/apps/timer/`, `/apps/password/`,
+  `/apps/qr/` (QR kód počítá vendorovaná knihovna `qrcode.js` — kazuhikoarase/qrcode-generator, MIT),
+  `/apps/units/` (převodník jednotek), `/apps/wheel/` (losovací kolo a kostky — d4/d6/d8/d12/d20
+  jsou skutečná 3D tělesa přes vendorovanou knihovnu three.js — `three.module.min.js` +
+  `three.core.min.js`, mrdoob/three.js, MIT; d10 nemá v three.js vestavěnou geometrii,
+  zůstává jako ploché číslo).
 
 ## Časté úpravy
 - **Nový článek:** `src/posts/RRRR-MM-DD-nazev.md` s hlavičkou `title`, `date`, `excerpt`,
   volitelně `tags`; `draft: true` = koncept (jen v dev). Objeví se automaticky ve výpisu
   blogu (od nejnovějšího), URL `/blog/{slug}/`.
+- **Nová poznámka:** `src/poznamky/RRRR-MM-DD-nazev.md`, v hlavičce stačí `date`.
+  Titulek ani excerpt se nepíšou — zápisek je pár vět. Objeví se celý na `/poznamky/`
+  a spolu s články v `/feed.xml`.
 - **Menu, sociální sítě, téma kódu:** v `src/_data/site.yaml`; **písma** v `src/_data/fonts.yaml`
   (detaily v `HELP.md`).
   Položka v `nav`: nové okno/externí = `"newTab": true`; jen ikona = `"icon"` + `"label"`

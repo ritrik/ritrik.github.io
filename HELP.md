@@ -58,15 +58,21 @@ Co kde najdeš (vše podstatné je ve složce `src/`):
 | `src/_data/fonts.yaml` | **Písma** (Google Fonts + CSS rodiny). |
 | `src/_includes/base.njk` | **Hlavní šablona** — mobilní lišta, boční panel (logo, menu, patička), obsah, přepínač den/noc. |
 | `src/_includes/post.njk` | Šablona jednoho článku na blogu. |
+| `src/_includes/poznamka.njk` | Šablona jedné poznámky (zápisku). |
 | `src/index.njk` | **Úvodní stránka** (s fotkou lesa na pozadí). |
 | `src/about.md` | Stránka **O mně** (v Markdownu). |
+| `src/nyni.md` | Stránka **Nyní** — čím se právě zabýváš (v Markdownu). |
 | `src/blog.njk` | **Výpis článků** + filtr podle štítků. |
 | `src/posts/*.md` | Jednotlivé **články** (jeden soubor = jeden článek). |
 | `src/posts/posts.json` | Nastavuje článkům šablonu a adresu `/blog/{nazev}/`. Neměň. |
+| `src/poznamky.njk` | **Výpis poznámek** (ukazuje je celé pod sebou). |
+| `src/poznamky/*.md` | Jednotlivé **poznámky** (jeden soubor = jeden zápisek). |
+| `src/poznamky/poznamky.json` | Nastavuje poznámkám šablonu a adresu `/poznamky/{nazev}/`. Neměň. |
+| `src/sitemap.njk`, `src/robots.njk` | Mapa webu a pokyny pro vyhledávače. Generují se samy, neměň. |
 | `src/css/site.css` | **Vzhled a barvy.** |
 | `src/img/` | Logo (`logo.svg`, `logo.png`) a fotky pozadí `background_*.jpg`. |
 | `src/favicon.svg`, `src/favicon.ico` | Ikona webu v záložce prohlížeče. |
-| `src/apps/` | Statické mini-aplikace (kopírují se 1:1), např. `/apps/timer/`. |
+| `src/apps/` | Statické mini-aplikace (kopírují se 1:1), např. `/apps/timer/`, `/apps/password/`, `/apps/qr/`, `/apps/units/`, `/apps/wheel/` (kostky d4/d6/d8/d12/d20 jako 3D tělesa přes vendorovanou knihovnu three.js). |
 | `src/CNAME` | Doména webu (`ryutaro.cz`). |
 
 ---
@@ -119,9 +125,61 @@ Uprav `src/index.njk`.
 > ⚠️ **Tón webu.** Věta „Je tu tichá prázdnota / Možná jednou…" je osobní a záměrně
 > tichá. Drž ji nezdobenou — žádný marketingový jazyk ani veselé ozdoby. (Viz `CLAUDE.md`.)
 
+### Přidat poznámku
+
+Poznámka je **krátký zápisek** — pár vět. Je tu proto, aby přibývání obsahu neznamenalo
+vždycky psát celý článek. Vytvoř soubor v `src/poznamky/`, třeba
+`2026-09-03-o-mlze.md`, a do hlavičky stačí datum:
+
+```yaml
+---
+date: 2026-09-03
+---
+```
+
+Pak rovnou piš text. Čím se poznámka liší od článku:
+
+| | Článek (`src/posts/`) | Poznámka (`src/poznamky/`) |
+| --- | --- | --- |
+| Titulek | povinný | **žádný** (hlavičkou je datum) |
+| Excerpt, štítky | ano | ne |
+| Kde se ukáže | `/blog/` jako odkaz | `/poznamky/` **celá**, pod sebou |
+| Vlastní adresa | `/blog/{nazev}/` | `/poznamky/{nazev}/` |
+
+Do RSS kanálu jdou obojí dohromady, seřazené podle data — čtenář má jednu adresu
+`/feed.xml`. `draft: true` funguje u poznámek stejně jako u článků.
+
+Chceš-li poznámce přece jen nadpis, napiš ho normálně do textu jako `## Nadpis`.
+
 ### Upravit stránku „O mně"
 
 Uprav `src/about.md` (běžný Markdown).
+
+Stránka je zatím **skrytá** — má v hlavičce `hidden: true`, takže není v menu,
+nedostane se do `/sitemap.xml` a vyhledávačům říká `noindex`. Adresa `/o-mne/`
+funguje (dá se poslat komu chceš), ale sama se nikde nenabízí. Až ji budeš chtít
+zveřejnit:
+
+1. smaž řádek `hidden: true` z `src/about.md`,
+2. přidej do `nav` v `src/_data/site.yaml` položku `{ text: O mně, url: /o-mne/ }`.
+
+`hidden: true` funguje na kterékoli stránce, ne jen na téhle.
+
+### Upravit stránku „Nyní"
+
+Uprav `src/nyni.md`. Je to krátká zpráva o tom, co je teď — čemu se věnuješ, co čteš.
+Nemá to být seznam úkolů; klidně jen pár odstavců. **Datum poslední úpravy si přepiš
+sám** v hlavičce (`updated: 2026-09-03`) — schválně se nedopočítává z data souboru,
+aby se neměnilo při opravě překlepu.
+
+Stránka je zatím **skrytá** (`hidden: true`), stejně jako „O mně". Zveřejni ji, až
+budeš mít co napsat: smaž ten řádek a přidej do `nav` `{ text: Nyní, url: /nyni/ }`.
+
+> **Čím se liší od poznámek.** „Nyní" se **přepisuje** — je tam vždycky jen současný
+> stav, historie žádná. Poznámky se **vrší** a zůstávají. Zápisek „teď se učím Rust"
+> je za rok pořád v pořádku, protože tehdy platil; na „Nyní" bys ho přepsal.
+> Nevýhoda: stránka datem sama přiznává, když zestárne. Když ji nebudeš aspoň
+> párkrát do roka přepisovat, je lepší ji nezveřejňovat a psát jen poznámky.
 
 ### Konfigurace webu — `src/_data/site.yaml`
 
@@ -294,9 +352,18 @@ Obrázky lze zarovnat třídami `img-left` / `img-right` / `img-center`.
   `![alt text](/img/foto.jpg "Tohle je popisek")` → popisek se zobrazí pod obrázkem
   (text v `alt` zůstává zvlášť, kvůli přístupnosti). Zarovnání obrázku zůstává přes třídy
   `img-left` / `img-right` / `img-center`.
-- **RSS kanál:** blog má feed na `/feed.xml` (odkaz je i v hlavičce stránky), takže se
-  dá odebírat ve čtečkách. Generuje se sám z článků. Otevřený přímo v prohlížeči se
-  zobrazí **ostylovaný** (ne holé XML) díky XSLT stylu `src/feed.xsl`; čtečky styl ignorují.
+- **RSS kanál:** web má feed na `/feed.xml` (odkaz je i v hlavičce stránky), takže se
+  dá odebírat ve čtečkách. Generuje se sám z **článků i poznámek** dohromady, seřazených
+  podle data. Otevřený přímo v prohlížeči se zobrazí **ostylovaný** (ne holé XML) díky
+  XSLT stylu `src/feed.xsl`; čtečky styl ignorují.
+- **Náhled při sdílení:** když někam pošleš odkaz na stránku, ukáže se název, popisek
+  a obrázek. Popisek se bere z `description` v hlavičce stránky, obrázek je ve výchozím
+  stavu fotka lesa. U konkrétní stránky se dá přebít klíčem `image` v hlavičce:
+  ```yaml
+  image: /img/jina-fotka.jpg
+  ```
+- **Vyhledávače:** `/sitemap.xml` (seznam stránek) a `/robots.txt` se generují samy,
+  nic se v nich neudržuje ručně. Chybová stránka 404 se do mapy záměrně nedává.
 
 ---
 

@@ -40,6 +40,18 @@ nav:
       - text: Timer 2
         url: /apps/timer2/
         newTab: true
+      - text: Generátor hesel
+        url: /apps/password/
+        newTab: true
+      - text: Generátor QR kódů
+        url: /apps/qr/
+        newTab: true
+      - text: Převodník jednotek
+        url: /apps/units/
+        newTab: true
+      - text: Losovací kolo a kostky
+        url: /apps/wheel/
+        newTab: true
 #  - url: /feed.xml
 #    icon: rss-fill
 #    label: RSS kanál
