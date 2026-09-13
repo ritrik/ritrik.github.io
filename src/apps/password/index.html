@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="cs">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Generátor hesel</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main class="card">
+    <h1>Generátor hesel</h1>
+    <p class="note">
+      Hesla se generují lokálně přímo v prohlížeči. Nikam se neodesílají ani
+      neukládají.
+    </p>
+
+    <fieldset class="field algorithm">
+      <legend>Algoritmus</legend>
+      <label><input type="radio" name="algorithm" value="random" checked /> Náhodné znaky</label>
+      <label><input type="radio" name="algorithm" value="classic" /> Vyslovitelné — klasické</label>
+      <label><input type="radio" name="algorithm" value="secure" /> Vyslovitelné — bloky po 12</label>
+      <label><input type="radio" name="algorithm" value="long" /> Vyslovitelné — dlouhé</label>
+    </fieldset>
+    <p class="note" id="algo-info"></p>
+
+    <div class="field">
+      <div class="field-row">
+        <label for="length">Délka</label>
+        <output for="length" id="length-value">16</output>
+      </div>
+      <input type="range" id="length" min="4" max="64" value="16" />
+    </div>
+
+    <fieldset class="field charsets" id="charsets-field">
+      <legend>Znaky</legend>
+      <label><input type="checkbox" id="lowercase" checked /> malá písmena (a–z)</label>
+      <label><input type="checkbox" id="uppercase" checked /> VELKÁ PÍSMENA (A–Z)</label>
+      <label><input type="checkbox" id="digits" checked /> čísla (0–9)</label>
+      <label><input type="checkbox" id="symbols" /> symboly (!@#…)</label>
+    </fieldset>
+
+    <div class="field field-row">
+      <label for="count">Počet hesel</label>
+      <input type="number" id="count" min="1" max="20" value="1" />
+    </div>
+
+    <p class="error" id="error" hidden></p>
+
+    <button type="button" id="generate">Vygenerovat</button>
+
+    <ul class="results" id="results"></ul>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
