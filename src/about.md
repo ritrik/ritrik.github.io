@@ -3,6 +3,10 @@ layout: base.njk
 permalink: /o-mne/
 title: O mně
 description: Pár slov o autorovi webu Ryutaro.
+# Stránka zatím není ke zveřejnění: není v menu, nepatří do /sitemap.xml
+# a dostane <meta name="robots" content="noindex">. Až ji budeš chtít ukázat,
+# smaž tenhle řádek a přidej položku do `nav` v src/_data/site.yaml.
+hidden: true
 ---
 # O mně
 

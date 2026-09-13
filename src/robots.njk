@@ -1,0 +1,9 @@
+---
+permalink: /robots.txt
+eleventyExcludeFromCollections: true
+---
+{#- Adresa sitemapy se bere ze site.yaml → url, ať se nemůže rozejít s doménou. -#}
+User-agent: *
+Allow: /
+
+Sitemap: {{ site.url }}/sitemap.xml

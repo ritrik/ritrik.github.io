@@ -1,0 +1,26 @@
+---
+permalink: /sitemap.xml
+eleventyExcludeFromCollections: true
+---
+<?xml version="1.0" encoding="utf-8"?>
+{#
+  Mapa webu pro vyhledávače. Odkazuje se na ni /robots.txt.
+
+  Bereme jen stránky, které se opravdu vykreslují do HTML — `collections.all`
+  obsahuje i netextové výstupy (kanál, XSLT styl). Chybová stránka do mapy
+  nepatří, tu vyhledávač indexovat nemá.
+
+  Stránka s `hidden: true` v hlavičce se do mapy nedostane — je hotová, ale
+  autor ji zatím nezveřejňuje (viz src/about.md). Sama o sobě by ji sitemapa
+  vyhledávačům nabídla, i když na ni nikde nevede odkaz.
+#}
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+{%- for item in collections.all %}
+  {%- if item.outputPath and item.outputPath.endsWith(".html") and item.url != "/404.html" and not item.data.hidden %}
+  <url>
+    <loc>{{ site.url }}{{ item.url }}</loc>
+    <lastmod>{{ item.date | datumISO }}</lastmod>
+  </url>
+  {%- endif %}
+{%- endfor %}
+</urlset>

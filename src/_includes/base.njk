@@ -8,8 +8,30 @@
     <link rel="icon" href="/favicon.ico" sizes="16x16 32x32 48x48 64x64" type="image/vnd.microsoft.icon" />
     <link rel="apple-touch-icon-precomposed" href="/apple-touch-icon-precomposed.png" />
 
-    <title>{% if title %}{{ title }} · {{ site.title }}{% else %}{{ site.title }}{% endif %}</title>
+    {#- Název, adresa a náhledový obrázek stránky. Spočítá se jednou a použije
+        se i v metadatech pro sdílení níž, ať se text nepíše dvakrát.
+        Náhled se dá u konkrétní stránky přebít klíčem `image` v hlavičce. -#}
+    {%- set pageTitle = (title + " · " + site.title) if title else site.title -%}
+    {%- set pageUrl = site.url + page.url -%}
+    {%- set ogImage = site.url + (image or "/img/background_1200.jpg") -%}
+
+    <title>{{ pageTitle }}</title>
     {% if description %}<meta name="description" content="{{ description }}" />{% endif %}
+    <link rel="canonical" href="{{ pageUrl }}" />
+    {#- `hidden: true` v hlavičce = stránka existuje, ale nemá se zveřejňovat:
+        vypadne z /sitemap.xml a vyhledávačům řekne, ať ji neindexují. -#}
+    {% if hidden %}<meta name="robots" content="noindex" />{% endif %}
+
+    <!-- Metadata pro sdílení (Open Graph / Twitter) — bez nich vypadá odkaz na web
+         jako holá adresa bez názvu a náhledu. Adresy musí být absolutní. -->
+    <meta property="og:type" content="{% if layout == 'post.njk' or layout == 'poznamka.njk' %}article{% else %}website{% endif %}" />
+    <meta property="og:site_name" content="{{ site.title }}" />
+    <meta property="og:locale" content="{{ site.lang | replace('-', '_') }}" />
+    <meta property="og:title" content="{{ pageTitle }}" />
+    <meta property="og:url" content="{{ pageUrl }}" />
+    {% if description %}<meta property="og:description" content="{{ description }}" />{% endif %}
+    <meta property="og:image" content="{{ ogImage }}" />
+    <meta name="twitter:card" content="summary_large_image" />
 
     <!-- RSS/Atom kanál blogu -->
     <link rel="alternate" type="application/atom+xml" title="{{ site.title }}" href="/feed.xml" />
