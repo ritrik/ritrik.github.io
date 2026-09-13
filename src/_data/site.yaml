@@ -26,7 +26,12 @@ nav:
   - text: Domů
     url: /
   - text: Blog
-    url: /blog/  
+    url: /blog/
+  - text: Poznámky
+    url: /poznamky/
+# „O mně" (/o-mne/) a „Nyní" (/nyni/) tu záměrně nejsou — obě stránky existují,
+# ale autor je zatím nezveřejňuje (mají `hidden: true` ve své hlavičce).
+# Až bude čas, přidej sem { text: …, url: … } a v tom souboru smaž `hidden: true`.
   - text: Appky
     children:
       - text: Timer

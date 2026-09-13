@@ -603,6 +603,38 @@ body {
   line-height: 1.65;
 }
 
+/* Poznámky — výpis krátkých zápisků.
+   Proti blogu se ukazuje celý text (ne excerpt), nadpis nemusí být žádný,
+   a odkaz na samostatnou stránku nese datum. */
+.poznamka-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.poznamka-list .poznamka {
+  padding: 1.8rem 0;
+  border-bottom: 1px solid var(--rule);
+}
+.poznamka-list .poznamka:first-child {
+  padding-top: 0;
+}
+.poznamka-datum {
+  display: block;
+  margin: 0 0 0.6rem;
+}
+.poznamka-datum a {
+  color: inherit;
+  text-decoration: none;
+  border: 0;
+}
+.poznamka-datum a:hover {
+  color: var(--accent);
+}
+/* Poslední odstavec zápisku ať netlačí na oddělovací linku */
+.poznamka > :last-child {
+  margin-bottom: 0;
+}
+
 /* Filtr podle štítků (nad výpisem) */
 .tag-filter {
   display: flex;

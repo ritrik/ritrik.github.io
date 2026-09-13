@@ -139,11 +139,11 @@ export default function (eleventyConfig) {
     }
   });
 
-  // RSS/Atom kanál blogu → /feed.xml (z kolekce „posts")
+  // RSS/Atom kanál → /feed.xml (z kolekce „vse" = články i poznámky)
   eleventyConfig.addPlugin(feedPlugin, {
     type: "atom",
     outputPath: "/feed.xml",
-    collection: { name: "posts", limit: 0 },
+    collection: { name: "vse", limit: 0 },
     // XSLT styl pro hezké zobrazení kanálu v prohlížeči (soubor viz src/feed.xsl)
     stylesheet: "/feed.xsl",
     metadata: {
@@ -240,6 +240,21 @@ export default function (eleventyConfig) {
   // Kolekce článků (blog), seřazená od nejnovějšího
   eleventyConfig.addCollection("posts", (collectionApi) => {
     return collectionApi.getFilteredByTag("posts").sort((a, b) => b.date - a.date);
+  });
+
+  // Kolekce zápisků (poznámky), seřazená od nejnovějšího
+  eleventyConfig.addCollection("poznamky", (collectionApi) => {
+    return collectionApi.getFilteredByTag("poznamky").sort((a, b) => b.date - a.date);
+  });
+
+  // Články i poznámky dohromady, seřazené podle data — z téhle kolekce jede
+  // kanál /feed.xml, aby měl čtenář jednu adresu na všechno (jeho podtitul
+  // „Články a poznámky" tomu odpovídá).
+  eleventyConfig.addCollection("vse", (collectionApi) => {
+    return [
+      ...collectionApi.getFilteredByTag("posts"),
+      ...collectionApi.getFilteredByTag("poznamky"),
+    ].sort((a, b) => b.date - a.date);
   });
 
   // Seznam unikátních štítků napříč články (bez služebního štítku "posts").

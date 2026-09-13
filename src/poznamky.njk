@@ -1,0 +1,25 @@
+---
+layout: base.njk
+permalink: /poznamky/
+title: Poznámky
+description: Krátké zápisky.
+---
+<h1>Poznámky</h1>
+<p class="page-meta">Krátké zápisky</p>
+
+{# Výpis ukazuje celý text každé poznámky — jsou krátké, klikat se kvůli nim
+   nikam nemusí. Datum vede na samostatnou stránku zápisku (kvůli odkazování). #}
+{% if collections.poznamky | length %}
+  <ul class="poznamka-list">
+    {% for p in collections.poznamky %}
+      <li class="poznamka">
+        <time datetime="{{ p.date | datumISO }}" class="post-meta poznamka-datum">
+          <a href="{{ p.url }}">{{ p.date | datumCZ }}</a>{% if p.data.draft %} <span class="draft-badge">Koncept</span>{% endif %}
+        </time>
+        {{ p.content | safe }}
+      </li>
+    {% endfor %}
+  </ul>
+{% else %}
+  <p>Zatím tu nejsou žádné poznámky.</p>
+{% endif %}

@@ -1,0 +1,5 @@
+{
+  "layout": "poznamka.njk",
+  "tags": ["poznamky"],
+  "permalink": "/poznamky/{{ page.fileSlug }}/"
+}

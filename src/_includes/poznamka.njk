@@ -1,0 +1,21 @@
+---
+layout: base.njk
+---
+{#
+  Šablona jednoho zápisku. Proti post.njk je odlehčená: hlavičkou stránky je
+  datum, ne nadpis — poznámka je pár vět a titulek by jí byl často těsný.
+  Chceš-li přesto nadpis, napiš ho normálně do textu (## Nadpis).
+
+  Pozn.: klíč `title` tu vědomě nevykreslujeme. Poznámkám ho dopočítává
+  src/_data/eleventyComputed.js (datum), aby měl co ukázat <title> v prohlížeči
+  a <title> položky v kanálu — na stránce by to byl jen šum vedle data.
+#}
+<article class="poznamka poznamka--single">
+  <p class="post-back post-back--top"><a href="/poznamky/"><i class="bi bi-arrow-left" aria-hidden="true"></i> Zpět na poznámky</a></p>
+
+  <time datetime="{{ page.date | datumISO }}" class="post-meta poznamka-datum">{{ page.date | datumCZ }}{% if draft %} <span class="draft-badge">Koncept</span>{% endif %}</time>
+
+  {{ content | safe }}
+
+  <p class="post-back"><a href="/poznamky/"><i class="bi bi-arrow-left" aria-hidden="true"></i> Zpět na poznámky</a></p>
+</article>
