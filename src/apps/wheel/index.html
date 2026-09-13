@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="cs">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Losovací kolo a kostky</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main class="card">
+    <h1>Losovací kolo a kostky</h1>
+    <p class="note">Losuje se lokálně v prohlížeči, nic se nikam neodesílá.</p>
+
+    <div class="tabs">
+      <button type="button" class="tab active" data-tab="wheel">Kolo</button>
+      <button type="button" class="tab" data-tab="dice">Kostky</button>
+    </div>
+
+    <section id="panel-wheel">
+      <div class="field">
+        <label for="options">Možnosti (jedna na řádek)</label>
+        <textarea id="options" rows="5">Pizza
+Sushi
+Burger
+Salát</textarea>
+      </div>
+
+      <div class="wheel-area">
+        <div class="wheel-pointer" aria-hidden="true"></div>
+        <div class="wheel-spin" id="wheel-spin">
+          <canvas id="wheel-canvas" width="320" height="320"></canvas>
+        </div>
+      </div>
+
+      <p class="error" id="wheel-error" hidden></p>
+      <p class="result" id="wheel-result"></p>
+
+      <button type="button" id="spin-button">Roztočit</button>
+    </section>
+
+    <section id="panel-dice" hidden>
+      <div class="field field-row">
+        <label for="dice-count">Počet kostek</label>
+        <select id="dice-count">
+          <option value="1">1</option>
+          <option value="2" selected>2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+          <option value="5">5</option>
+          <option value="6">6</option>
+        </select>
+      </div>
+
+      <div class="field field-row">
+        <label for="dice-sides">Typ kostky</label>
+        <select id="dice-sides">
+          <option value="4">d4</option>
+          <option value="6" selected>d6</option>
+          <option value="8">d8</option>
+          <option value="10">d10</option>
+          <option value="12">d12</option>
+          <option value="20">d20</option>
+        </select>
+      </div>
+
+      <div class="dice-3d" id="dice-3d">
+        <canvas id="dice-canvas"></canvas>
+      </div>
+      <div class="dice-row" id="dice-row" hidden></div>
+      <p class="result" id="dice-result"></p>
+
+      <button type="button" id="roll-button">Hodit</button>
+    </section>
+  </main>
+
+  <script type="module" src="script.js"></script>
+</body>
+</html>
